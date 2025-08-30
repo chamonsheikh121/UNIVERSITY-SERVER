@@ -1,16 +1,19 @@
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
+import { StudentRouter } from './app/modules/student/student.router';
 const app = express();
 
 app.use(express.json());
 app.use(express.text());
 app.use(cors());
 
-const userRouter = express.Router();
-const courseRouter = express.Router();
 
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/courses', courseRouter);
+
+//application routes
+
+
+app.use('/api/v1/students', StudentRouter );
+// app.use('/api/v1/courses', courseRouter);
 
 // global error handler
 
@@ -24,31 +27,9 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-userRouter.post(
-  '/create-user',
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const user = req.body;
-      res.json({
-        success: true,
-        message: 'user created successfully',
-        data: user,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-);
 
-courseRouter.post('/create-course', (req: Request, res: Response) => {
-  const course = req.body;
 
-  res.json({
-    success: true,
-    message: 'course created successfully',
-    data: course,
-  });
-});
+
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({
