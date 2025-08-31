@@ -1,18 +1,32 @@
 import { Request, Response } from 'express';
 import { studentServices } from './student.service';
+import student_validation_schema from './student.joi_Validation';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
-    const student = req.body;
-    console.log(student);
-    const result = await studentServices.createStudentToDB(student);
+    const { studentData } = req.body;
+    const { error } = student_validation_schema.validate(studentData);
+    if (error) {
+      res.status(400).json({
+        success: false,
+        message: 'Please provide valid data',
+        error: error.details,
+      });
+    }
+
+    console.log(studentData);
+    const result = await studentServices.createStudentToDB(studentData);
     res.status(200).json({
       success: true,
       message: 'student created successfully',
       data: result,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      message: 'Bad request from server',
+      error: error.message || error,
+    });
   }
 };
 const getStudents = async (req: Request, res: Response) => {
