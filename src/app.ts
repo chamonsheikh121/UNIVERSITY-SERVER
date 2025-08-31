@@ -7,12 +7,9 @@ app.use(express.json());
 app.use(express.text());
 app.use(cors());
 
-
-
 //application routes
 
-
-app.use('/api/v1/students', StudentRouter );
+app.use('/api/v1/students', StudentRouter);
 // app.use('/api/v1/courses', courseRouter);
 
 // global error handler
@@ -26,10 +23,6 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     message: ' user creation failed',
   });
 });
-
-
-
-
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({

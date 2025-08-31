@@ -1,5 +1,3 @@
-
-
 export type Guardian = {
   fatherName: string;
   fatherOccupation: string;
