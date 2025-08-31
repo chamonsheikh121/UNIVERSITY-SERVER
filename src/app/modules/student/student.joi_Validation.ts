@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
- const guardian_validation_schema = Joi.object({
+ const guardian_joi_validation_schema = Joi.object({
   fatherName: Joi.string().required().messages({
     'any.required': 'Father name is required',
     'string.base': 'Father name must be a string',
@@ -22,7 +22,7 @@ import Joi from 'joi';
   }),
 });
 
- const userName_validation_schema = Joi.object({
+ const userName_joi_validation_schema = Joi.object({
   firstName: Joi.string().required().messages({
     'any.required': 'First name is required',
   }),
@@ -32,7 +32,7 @@ import Joi from 'joi';
   }),
 });
 
- const localGuardian_validation_schema = Joi.object({
+ const localGuardian_joi_validation_schema = Joi.object({
   name: Joi.string().required().messages({
     'any.required': 'Local guardian name is required',
   }),
@@ -47,11 +47,11 @@ import Joi from 'joi';
   }),
 });
 
- const student_validation_schema = Joi.object({
+ const student_joi_validation_schema = Joi.object({
   id: Joi.string().required().messages({
     'any.required': 'Student ID is required',
   }),
-  name: userName_validation_schema.required(),
+  name: userName_joi_validation_schema.required(),
   gender: Joi.string().valid('male', 'female').required().messages({
     'any.only': "Gender must be either 'male' or 'female'",
   }),
@@ -84,8 +84,8 @@ import Joi from 'joi';
   permanentAddress: Joi.string().required().messages({
     'any.required': 'Permanent address is required',
   }),
-  guardian: guardian_validation_schema.required(),
-  localGuardian: localGuardian_validation_schema.required(),
+  guardian: guardian_joi_validation_schema.required(),
+  localGuardian: localGuardian_joi_validation_schema.required(),
   profileImage: Joi.string().uri().optional(),
   isActive: Joi.string()
   .valid('active', 'block')
@@ -96,4 +96,4 @@ import Joi from 'joi';
 });
 
 
-export default student_validation_schema
+export default student_joi_validation_schema;
