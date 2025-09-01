@@ -62,7 +62,7 @@ const getStudent = async (req: Request, res: Response) => {
 
 const deleteStudent = async (req: Request, res: Response) => {
   try {
-    const id = req.params;
+    const { id } = req.params;
 
     const result = await studentServices.deleteStudentFromDB(id);
 

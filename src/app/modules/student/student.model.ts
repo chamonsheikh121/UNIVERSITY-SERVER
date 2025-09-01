@@ -5,8 +5,6 @@ import {
   TGuardian,
   TLocalGuardian,
   TStudent,
-  TStudentMethods,
-  TStudentModel,
   TUserName,
 } from './student.interface';
 import config from '../../config';
@@ -93,6 +91,15 @@ const studentSchema = new Schema<TStudent, IStudentModel>(
     timestamps: true, // adds createdAt & updatedAt
   },
 );
+
+studentSchema.pre('find', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+studentSchema.pre('findOne', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
 
 studentSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, Number(config.salt_rounds));
