@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
- const guardian_joi_validation_schema = Joi.object({
+const guardian_joi_validation_schema = Joi.object({
   fatherName: Joi.string().required().messages({
     'any.required': 'Father name is required',
     'string.base': 'Father name must be a string',
@@ -22,7 +22,7 @@ import Joi from 'joi';
   }),
 });
 
- const userName_joi_validation_schema = Joi.object({
+const userName_joi_validation_schema = Joi.object({
   firstName: Joi.string().required().messages({
     'any.required': 'First name is required',
   }),
@@ -32,7 +32,7 @@ import Joi from 'joi';
   }),
 });
 
- const localGuardian_joi_validation_schema = Joi.object({
+const localGuardian_joi_validation_schema = Joi.object({
   name: Joi.string().required().messages({
     'any.required': 'Local guardian name is required',
   }),
@@ -47,7 +47,7 @@ import Joi from 'joi';
   }),
 });
 
- const student_joi_validation_schema = Joi.object({
+const student_joi_validation_schema = Joi.object({
   id: Joi.string().required().messages({
     'any.required': 'Student ID is required',
   }),
@@ -87,13 +87,9 @@ import Joi from 'joi';
   guardian: guardian_joi_validation_schema.required(),
   localGuardian: localGuardian_joi_validation_schema.required(),
   profileImage: Joi.string().uri().optional(),
-  isActive: Joi.string()
-  .valid('active', 'block')
-  .default('active')
-  .messages({
+  isActive: Joi.string().valid('active', 'block').default('active').messages({
     'any.only': "Status must be either 'active' or 'block'",
   }),
 });
-
 
 export default student_joi_validation_schema;

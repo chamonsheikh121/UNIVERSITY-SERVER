@@ -16,14 +16,13 @@ const createStudent = async (req: Request, res: Response) => {
 
     const data = student_zod_validation_schema.parse(studentData);
 
-
-    console.log("ZOD data is : " , data);
+    console.log('ZOD data is : ', data);
 
     const result = await studentServices.createStudentToDB(data);
     res.status(200).json({
       success: true,
       message: 'student created successfully',
-      data: result, 
+      data: result,
     });
   } catch (error: any) {
     res.status(400).json({
@@ -61,8 +60,29 @@ const getStudent = async (req: Request, res: Response) => {
   }
 };
 
+const deleteStudent = async (req: Request, res: Response) => {
+  try {
+    const id = req.params;
+
+    const result = await studentServices.deleteStudentFromDB(id);
+
+    res.status(200).json({
+      success: true,
+      message: 'student deleted successfully',
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      message: 'Student deleting failed',
+      error: error.message || error,
+    });
+  }
+};
+
 export const studentsControllers = {
   createStudent,
   getStudents,
   getStudent,
+  deleteStudent,
 };

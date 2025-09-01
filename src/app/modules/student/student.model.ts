@@ -84,9 +84,10 @@ const studentSchema = new Schema<TStudent, IStudentModel>(
     },
     profileImage: { type: String },
     isActive: { type: String, enum: ['active', 'block'], default: 'active' },
-    isDeleted:{
-      type:Boolean, default:false
-    }
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true, // adds createdAt & updatedAt
@@ -94,15 +95,13 @@ const studentSchema = new Schema<TStudent, IStudentModel>(
 );
 
 studentSchema.pre('save', async function (next) {
-
   this.password = await bcrypt.hash(this.password, Number(config.salt_rounds));
 
   next();
 });
 
-studentSchema.post('save', async function (Doc,next) {
-
-  Doc.password = ''
+studentSchema.post('save', async function (Doc, next) {
+  Doc.password = '';
 
   next();
 });

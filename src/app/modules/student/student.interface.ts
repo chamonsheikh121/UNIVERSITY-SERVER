@@ -41,14 +41,13 @@ export type TStudent = {
   isDeleted: boolean;
 };
 
-
 // Interface.ts a Type banaite hobe function er.
 export type TStudentMethods = {
   isUserExists(id: string): Promise<TStudent | null>;
 };
 
-export interface IStudentModel extends Model<TStudent>{
-  is_user_email_exist(id: string): Promise<TStudent| null>
+export interface IStudentModel extends Model<TStudent> {
+  is_user_email_exist(id: string): Promise<TStudent | null>;
 }
 
 // Interface.ts a Aro akti type banaite hobe Model import kore.
