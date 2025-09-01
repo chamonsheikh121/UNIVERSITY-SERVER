@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import { parseAsync, z } from 'zod';
+import default from './../../config/index';
 
 // UserName schema
 const userName_zod_validation_schema = z.object({
@@ -28,6 +29,7 @@ const localGuardian_zod_validation_schema = z.object({
 // Main Student schema
 export const student_zod_validation_schema = z.object({
   id: z.string().min(1, 'Student ID is required'),
+  password: z.string().max(20).min(6),
   name: userName_zod_validation_schema,
   gender: z.enum(['male', 'female']),
   dateOfBirth: z.string().min(1, 'Date of birth is required'),
@@ -43,4 +45,5 @@ export const student_zod_validation_schema = z.object({
   localGuardian: localGuardian_zod_validation_schema,
   profileImage: z.string().optional(), // 👈 fixed key name
   isActive: z.enum(['active', 'block']).default('active'),
+  idDeleted: z.boolean().default(false)
 });

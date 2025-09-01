@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import bcrypt from 'bcrypt';
 import {
   IStudentModel,
   TGuardian,
@@ -8,6 +9,7 @@ import {
   TStudentModel,
   TUserName,
 } from './student.interface';
+import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: { type: String, required: true },
@@ -26,14 +28,16 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   address: { type: String, required: true },
 });
 
-
-// Model.ts schema te DataType to thakbei shate ai banano function type ar banano model type include korte hobe.
 const studentSchema = new Schema<TStudent, IStudentModel>(
   {
     id: {
       type: String,
       required: [true, 'Student ID is required'],
       unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
     },
     name: {
       type: userNameSchema,
@@ -80,24 +84,39 @@ const studentSchema = new Schema<TStudent, IStudentModel>(
     },
     profileImage: { type: String },
     isActive: { type: String, enum: ['active', 'block'], default: 'active' },
+    isDeleted:{
+      type:Boolean, default:false
+    }
   },
   {
     timestamps: true, // adds createdAt & updatedAt
   },
 );
 
+studentSchema.pre('save', async function (next) {
 
-// Then user ba data model call kore  .methods.function name diye function create korte hobe.
+  this.password = await bcrypt.hash(this.password, Number(config.salt_rounds));
+
+  next();
+});
+
+studentSchema.post('save', async function (Doc,next) {
+
+  Doc.password = ''
+
+  next();
+});
+
+// instance method
 studentSchema.methods.isUserExists = async function (id: string) {
   const isExists = await StudentModel.findOne({ id });
   return isExists;
 };
-
-studentSchema.statics.is_user_email_exist = async function(email: string){
-  const is_email_exist = await StudentModel.findOne({email});
-  return is_email_exist
-}
-
+// static method
+studentSchema.statics.is_user_email_exist = async function (email: string) {
+  const is_email_exist = await StudentModel.findOne({ email });
+  return is_email_exist;
+};
 
 // User ba data model a Data type er shate just model type ta add kore dite hobe.
 const StudentModel = model<TStudent, IStudentModel>('Students', studentSchema);
