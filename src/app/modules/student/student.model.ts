@@ -1,52 +1,83 @@
 import { Schema, model } from 'mongoose';
 import {
-  Guardian,
-  LocalGuardian,
-  Student,
-  UserName,
+  IStudentModel,
+  TGuardian,
+  TLocalGuardian,
+  TStudent,
+  TStudentMethods,
+  TStudentModel,
+  TUserName,
 } from './student.interface';
 
-const userNameSchema = new Schema<UserName>({
+const userNameSchema = new Schema<TUserName>({
   firstName: { type: String, required: true },
   middleName: { type: String },
   lastName: { type: String, required: true },
 });
-const guardianSchema = new Schema<Guardian>({
+const guardianSchema = new Schema<TGuardian>({
   fatherName: { type: String, required: true },
   fatherContactNo: { type: String, required: true },
   motherName: { type: String, required: true },
   motherContactNo: { type: String, required: true },
 });
-const localGuardianSchema = new Schema<LocalGuardian>({
+const localGuardianSchema = new Schema<TLocalGuardian>({
   name: { type: String, required: true },
   contactNo: { type: String, required: true },
   address: { type: String, required: true },
 });
 
-const studentSchema = new Schema<Student>(
+
+// Model.ts schema te DataType to thakbei shate ai banano function type ar banano model type include korte hobe.
+const studentSchema = new Schema<TStudent, IStudentModel>(
   {
-    id: { type: String, required: [true, 'Student ID is required'], unique: true },
-    name: { 
-      type: userNameSchema, 
-      required: [true, 'Student name is required'] 
+    id: {
+      type: String,
+      required: [true, 'Student ID is required'],
+      unique: true,
     },
-    gender: { 
-      type: String, 
-      enum: ['male', 'female'], 
-      required: [true, 'Gender is required'] 
+    name: {
+      type: userNameSchema,
+      required: [true, 'Student name is required'],
     },
-    dateOfBirth: { type: String, required: [true, 'Date of birth is required'] },
-    email: { type: String, required: [true, 'Email is required'], unique: true },
+    gender: {
+      type: String,
+      enum: ['male', 'female'],
+      required: [true, 'Gender is required'],
+    },
+    dateOfBirth: {
+      type: String,
+      required: [true, 'Date of birth is required'],
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      unique: true,
+    },
     contactNo: { type: String, required: [true, 'Contact number is required'] },
-    emergencyContactNo: { type: String, required: [true, 'Emergency contact number is required'] },
+    emergencyContactNo: {
+      type: String,
+      required: [true, 'Emergency contact number is required'],
+    },
     bloodGroup: {
       type: String,
       enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', '0-'],
     },
-    presentAddress: { type: String, required: [true, 'Present address is required'] },
-    permanentAddress: { type: String, required: [true, 'Permanent address is required'] },
-    guardian: { type: guardianSchema, required: [true, 'Guardian information is required'] },
-    localGuardian: { type: localGuardianSchema, required: [true, 'Local guardian information is required'] },
+    presentAddress: {
+      type: String,
+      required: [true, 'Present address is required'],
+    },
+    permanentAddress: {
+      type: String,
+      required: [true, 'Permanent address is required'],
+    },
+    guardian: {
+      type: guardianSchema,
+      required: [true, 'Guardian information is required'],
+    },
+    localGuardian: {
+      type: localGuardianSchema,
+      required: [true, 'Local guardian information is required'],
+    },
     profileImage: { type: String },
     isActive: { type: String, enum: ['active', 'block'], default: 'active' },
   },
@@ -56,6 +87,19 @@ const studentSchema = new Schema<Student>(
 );
 
 
-const StudentModel = model<Student>('Students', studentSchema);
+// Then user ba data model call kore  .methods.function name diye function create korte hobe.
+studentSchema.methods.isUserExists = async function (id: string) {
+  const isExists = await StudentModel.findOne({ id });
+  return isExists;
+};
+
+studentSchema.statics.is_user_email_exist = async function(email: string){
+  const is_email_exist = await StudentModel.findOne({email});
+  return is_email_exist
+}
+
+
+// User ba data model a Data type er shate just model type ta add kore dite hobe.
+const StudentModel = model<TStudent, IStudentModel>('Students', studentSchema);
 
 export default StudentModel;
