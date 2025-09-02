@@ -7,7 +7,6 @@ import {
   TUserName,
 } from './student.interface';
 
-
 const userNameSchema = new Schema<TUserName>({
   firstName: { type: String, required: true },
   middleName: { type: String },
@@ -32,7 +31,7 @@ const studentSchema = new Schema<TStudent, IStudentModel>(
       required: [true, 'Student ID is required'],
       unique: true,
     },
-     userId:{
+    userId: {
       type: Schema.Types.ObjectId,
       ref: 'Users',
       required: [true, 'User ID is required'],

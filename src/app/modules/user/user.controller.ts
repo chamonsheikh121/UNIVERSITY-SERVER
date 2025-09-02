@@ -1,17 +1,12 @@
-
-
 console.log('controller file loaded');
 
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
-import { user_services } from "./user.service";
-
-
+import { user_services } from './user.service';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { password, studentData } = req.body;
-
 
     // const { error, value } = student_validation_schema.validate(studentData);
     // if (error) {
@@ -22,10 +17,10 @@ const createStudent = async (req: Request, res: Response) => {
     //   });
     // }
 
-
-   
-
-    const result = await user_services.create_student_to_db(password, studentData)
+    const result = await user_services.create_student_to_db(
+      password,
+      studentData,
+    );
     res.status(200).json({
       success: true,
       message: 'student created successfully',
@@ -40,8 +35,8 @@ const createStudent = async (req: Request, res: Response) => {
   }
 };
 
-console.log("Exporting createStudent =>", createStudent);
+console.log('Exporting createStudent =>', createStudent);
 
-export const user_controllers ={
-    createStudent
-}
+export const user_controllers = {
+  createStudent,
+};

@@ -12,7 +12,6 @@ const create_student_to_db = async (
   //     throw new Error('User already exist from statics ! ');
   //   }
 
-
   //===========================================================================================================================================================================================
   // is user id exist or not and is student email exist or not need to check here.
 
@@ -23,21 +22,17 @@ const create_student_to_db = async (
   userData.role = 'student';
   userData.status = 'in-progress';
 
-
-
   const result_user = await UserModel.create(userData);
 
   if (Object.keys(result_user).length) {
     student_data.id = result_user.id;
     student_data.userId = result_user._id;
 
-
-    console.log('user created succesfully',student_data);
+    console.log('user created succesfully', student_data);
 
     //  const data = student_zod_validation_schema.parse(student_data);
-     
-    //     console.log("hey man " ,data)
 
+    //     console.log("hey man " ,data)
 
     const result_student = await StudentModel.create(student_data);
     return result_student;

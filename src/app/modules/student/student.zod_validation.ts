@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import {z } from 'zod';
+import { z } from 'zod';
 
 // UserName schema
 const userName_zod_validation_schema = z.object({
@@ -49,6 +49,6 @@ export const student_zod_validation_schema = z.object({
   permanentAddress: z.string().min(1, 'Permanent address is required'),
   guardian: guardian_zod_validation_schema,
   localGuardian: localGuardian_zod_validation_schema,
-  profileImage: z.string().optional(), 
+  profileImage: z.string().optional(),
   isDeleted: z.boolean().default(false),
 });
