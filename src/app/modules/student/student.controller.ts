@@ -1,35 +1,6 @@
 import { Request, Response } from 'express';
 import { studentServices } from './student.service';
-import { student_zod_validation_schema } from './student.zod_validation';
 
-const createStudent = async (req: Request, res: Response) => {
-  try {
-    const { studentData } = req.body;
-
-    // const { error, value } = student_validation_schema.validate(studentData);
-    // if (error) {
-    //   res.status(400).json({
-    //     success: false,
-    //     message: 'Please provide valid data',
-    //     error: error.details,
-    //   });
-    // }
-    const data = student_zod_validation_schema.parse(studentData);
-
-    const result = await studentServices.createStudentToDB(data);
-    res.status(200).json({
-      success: true,
-      message: 'student created successfully',
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: error.message || 'Bad request from server',
-      error: error,
-    });
-  }
-};
 const getStudents = async (req: Request, res: Response) => {
   try {
     const result = await studentServices.getAllStudentsFromDB();
@@ -79,7 +50,6 @@ const deleteStudent = async (req: Request, res: Response) => {
 };
 
 export const studentsControllers = {
-  createStudent,
   getStudents,
   getStudent,
   deleteStudent,
