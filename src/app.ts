@@ -24,15 +24,15 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello World! Server is working!');
+});
+
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: 'Route not found',
   });
-});
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World! Server is working!');
 });
 
 export default app;

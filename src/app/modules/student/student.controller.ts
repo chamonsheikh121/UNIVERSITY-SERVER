@@ -5,6 +5,7 @@ import { student_zod_validation_schema } from './student.zod_validation';
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { studentData } = req.body;
+
     // const { error, value } = student_validation_schema.validate(studentData);
     // if (error) {
     //   res.status(400).json({
@@ -13,10 +14,7 @@ const createStudent = async (req: Request, res: Response) => {
     //     error: error.details,
     //   });
     // }
-
     const data = student_zod_validation_schema.parse(studentData);
-
-    console.log('ZOD data is : ', data);
 
     const result = await studentServices.createStudentToDB(data);
     res.status(200).json({
@@ -27,8 +25,8 @@ const createStudent = async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(400).json({
       success: false,
-      message: 'Bad request from server',
-      error: error.message || error,
+      message: error.message || 'Bad request from server',
+      error: error,
     });
   }
 };

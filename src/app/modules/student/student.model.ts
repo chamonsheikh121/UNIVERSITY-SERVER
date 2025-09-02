@@ -62,7 +62,7 @@ const studentSchema = new Schema<TStudent, IStudentModel>(
     },
     bloodGroup: {
       type: String,
-      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', '0-'],
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     },
     presentAddress: {
       type: String,
