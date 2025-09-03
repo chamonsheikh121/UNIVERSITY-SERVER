@@ -1,51 +1,50 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { studentServices } from './student.service';
+import { send_response } from '../../Middle_wares/send_response';
 
-const getStudents = async (req: Request, res: Response) => {
+const getStudents = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await studentServices.getAllStudentsFromDB();
-    res.status(200).json({
-      success: true,
+    send_response(res, {
       message: 'students retrieved successfully',
       data: result,
     });
+    res.status(200).json({
+      success: true,
+    });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-const getStudent = async (req: Request, res: Response) => {
+const getStudent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     console.log(id);
     const result = await studentServices.getStudentFromDB(id);
-    res.status(200).json({
-      success: true,
+    send_response(res, {
       message: 'student retrieved successfully',
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-const deleteStudent = async (req: Request, res: Response) => {
+const deleteStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
-
     const result = await studentServices.deleteStudentFromDB(id);
-
-    res.status(200).json({
-      success: true,
+    send_response(res, {
       message: 'student deleted successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: 'Student deleting failed',
-      error: error.message || error,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 

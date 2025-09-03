@@ -1,10 +1,13 @@
-console.log('controller file loaded');
-
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import { user_services } from './user.service';
+import { send_response } from '../../Middle_wares/send_response';
 
-const createStudent = async (req: Request, res: Response) => {
+const createStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { password, studentData } = req.body;
 
@@ -21,17 +24,19 @@ const createStudent = async (req: Request, res: Response) => {
       password,
       studentData,
     );
-    res.status(200).json({
-      success: true,
+
+    send_response(res, {
       message: 'student created successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: error.message || 'Bad request from server',
-      error: error,
-    });
+  } catch (error) {
+    next(error);
+
+    // res.status(400).json({
+    //   success: false,
+    //   message: error.message || 'Bad request from server',
+    //   error: error,
+    // });
   }
 };
 
