@@ -32,7 +32,7 @@ export const create_student_zod_validation_schema = z.object({
     studentData: z.object({
       name: userName_zod_validation_schema,
       gender: z.enum(['male', 'female']),
-      dateOfBirth: z.date().min(1, 'Date of birth is required').optional(),
+      dateOfBirth: z.string().min(1, 'Date of birth is required').optional(),
       email: z.string().email('Invalid email address'),
       contactNo: z.string().min(1, 'Contact number is required'),
       emergencyContactNo: z

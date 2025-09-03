@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { months, semester_codes, semester_Names } from './academic_semester_constants';
+import {
+  months,
+  semester_codes,
+  semester_Names,
+} from './academic_semester_constants';
 
 export const academic_semester_zod_validation_schema = z.object({
   body: z.object({

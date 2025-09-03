@@ -5,23 +5,37 @@ const create_academic_semester_to_db = async (payload: TAcademic_Semester) => {
   type TAcademic_semester_name_code_mapping = {
     [key: string]: string;
   };
-
   const academic_semester_name_code_mapping: TAcademic_semester_name_code_mapping =
     {
       Autumn: '01',
       Summer: '02',
       Fall: '03',
     };
-
-    if(academic_semester_name_code_mapping[payload.name]!== payload.code ){
-        throw new Error('Invalid semester code')
-    }
-
-
+  if (academic_semester_name_code_mapping[payload.name] !== payload.code) {
+    throw new Error('Invalid semester code');
+  }
   const result = await Academic_Semester_Model.create(payload);
+  return result;
+};
+
+const get_all_academic_semesters_from_db = async () => {
+  const result = await Academic_Semester_Model.find();
+  return result;
+};
+const get_single_academic_semester_from_db = async (id: string) => {
+  const result = await Academic_Semester_Model.findById(id);
+  return result;
+};
+const update_academic_semester_from_db = async (id: string) => {
+  const result = await Academic_Semester_Model.findByIdAndUpdate(id, {
+    year: '2030',
+  });
   return result;
 };
 
 export const academic_semester_service = {
   create_academic_semester_to_db,
+  get_all_academic_semesters_from_db,
+  get_single_academic_semester_from_db,
+  update_academic_semester_from_db,
 };
