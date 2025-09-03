@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import  HttpStatus  from 'http-status';
+import HttpStatus from 'http-status';
 
 type TResopnseData<T> = {
   message: string;
@@ -7,9 +7,8 @@ type TResopnseData<T> = {
 };
 
 export const send_response = <T>(res: Response, data: TResopnseData<T>) => {
-
-    const status_code = HttpStatus.OK;
-    const success = true;
+  const status_code = HttpStatus.OK;
+  const success = true;
 
   res.status(status_code).json({
     success: success,

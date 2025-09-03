@@ -1,4 +1,3 @@
-import { Schema } from 'mongoose';
 import { z } from 'zod';
 
 // UserName schema
@@ -27,28 +26,26 @@ const localGuardian_zod_validation_schema = z.object({
 });
 
 // Main Student schema
-export const student_zod_validation_schema = z.object({
-  id: z.string().min(1, 'Student ID is required'),
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Users',
-    required: [true, 'User ID is required'],
-    unique: true,
-  },
-
-  name: userName_zod_validation_schema,
-  gender: z.enum(['male', 'female']),
-  dateOfBirth: z.string().min(1, 'Date of birth is required'),
-  email: z.string().email('Invalid email address'),
-  contactNo: z.string().min(1, 'Contact number is required'),
-  emergencyContactNo: z.string().min(1, 'Emergency contact number is required'),
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
-    .optional(),
-  presentAddress: z.string().min(1, 'Present address is required'),
-  permanentAddress: z.string().min(1, 'Permanent address is required'),
-  guardian: guardian_zod_validation_schema,
-  localGuardian: localGuardian_zod_validation_schema,
-  profileImage: z.string().optional(),
-  isDeleted: z.boolean().default(false),
+export const create_student_zod_validation_schema = z.object({
+  body: z.object({
+    password: z.string().min(6, 'password must be at least 6 character long'),
+    studentData: z.object({
+      name: userName_zod_validation_schema,
+      gender: z.enum(['male', 'female']),
+      dateOfBirth: z.date().min(1, 'Date of birth is required').optional(),
+      email: z.string().email('Invalid email address'),
+      contactNo: z.string().min(1, 'Contact number is required'),
+      emergencyContactNo: z
+        .string()
+        .min(1, 'Emergency contact number is required'),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
+        .optional(),
+      presentAddress: z.string().min(1, 'Present address is required'),
+      permanentAddress: z.string().min(1, 'Permanent address is required'),
+      guardian: guardian_zod_validation_schema,
+      localGuardian: localGuardian_zod_validation_schema,
+      profileImage: z.string().optional(),
+    }),
+  }),
 });

@@ -30,10 +30,6 @@ const create_student_to_db = async (
 
     console.log('user created succesfully', student_data);
 
-    //  const data = student_zod_validation_schema.parse(student_data);
-
-    //     console.log("hey man " ,data)
-
     const result_student = await StudentModel.create(student_data);
     return result_student;
   }
