@@ -1,15 +1,11 @@
 import { z } from 'zod';
-import {
-  months,
-  semester_codes,
-  semester_Names,
-} from './academic_semester.model';
+import { months, semester_codes, semester_Names } from './academic_semester_constants';
 
-const academic_semester_zod_validation_schema = z.object({
+export const academic_semester_zod_validation_schema = z.object({
   body: z.object({
     name: z.enum(semester_Names),
     code: z.enum(semester_codes),
-    year: z.date(),
+    year: z.string(),
     start_month: z.enum(months),
     end_month: z.enum(months),
   }),

@@ -23,7 +23,7 @@ export type TSemester_Code = '01' | '02' | '03';
 export type TAcademic_Semester = {
   name: TSemester_Name;
   code: TSemester_Code;
-  year: Date;
+  year: string;
   start_month: TMonth;
   end_month: TMonth;
 };
