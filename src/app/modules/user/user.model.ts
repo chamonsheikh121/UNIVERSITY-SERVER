@@ -20,7 +20,7 @@ const userSchema = new Schema<TUser>(
 );
 
 userSchema.pre('save', async function (next) {
-  console.log('from middle ware', this);
+ 
   this.password = await bcrypt.hash(this.password, Number(config.salt_rounds));
   next();
 });

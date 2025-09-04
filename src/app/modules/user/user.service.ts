@@ -16,7 +16,6 @@ const create_student_to_db = async (password: string, payload: TStudent) => {
   const academic_semester = await Academic_Semester_Model.findById(
     payload.academic_semester_id,
   );
-  console.log('academic semester is', academic_semester);
 
   userData.id = await genarate_student_id(academic_semester);
 
