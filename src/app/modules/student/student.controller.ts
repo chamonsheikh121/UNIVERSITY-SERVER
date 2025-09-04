@@ -24,8 +24,8 @@ const getStudent = catchAsync(async (req, res, next) => {
 });
 
 const deleteStudent = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const result = await studentServices.deleteStudentFromDB(id);
+  const { studentId } = req.params;
+  const result = await studentServices.deleteStudentFromDB(studentId);
   send_response(res, {
     message: 'student deleted successfully',
     data: result,

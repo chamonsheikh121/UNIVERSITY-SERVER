@@ -1,10 +1,8 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
+type TAcademic_department = {
+  name: string;
+  academic_faculty_id: Types.ObjectId;
+};
 
-
- type TAcademic_department = {
-    name: string;
-    academic_faculty_id: Types.ObjectId
-}
-
-export default TAcademic_department
+export default TAcademic_department;

@@ -1,11 +1,5 @@
+type TAcademic_faculty = {
+  name: string;
+};
 
-
-
-
- type TAcademic_faculty = {
-    name: string;
-}
-
-
-export default TAcademic_faculty
-
+export default TAcademic_faculty;

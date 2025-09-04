@@ -1,14 +1,17 @@
-import TAcademic_department from "./academic_department.interface";
-import Academic_Department_Model from "./academic_department.model";
+import TAcademic_department from './academic_department.interface';
+import Academic_Department_Model from './academic_department.model';
 
-
-const create_academic_department_to_db = async (payload: TAcademic_department) => {
+const create_academic_department_to_db = async (
+  payload: TAcademic_department,
+) => {
   const result = await Academic_Department_Model.create(payload);
   return result;
 };
 
 const get_all_academic_departments_from_db = async () => {
-  const result = await Academic_Department_Model.find();
+  const result = await Academic_Department_Model.find().populate(
+    'academic_faculty_id',
+  );
   return result;
 };
 const get_single_academic_department_from_db = async (id: string) => {
@@ -21,9 +24,9 @@ const update_academic_department_from_db = async (id: string, payload: any) => {
     {
       name: payload.name,
     },
-   {
-    new: true
-   }
+    {
+      new: true,
+    },
   );
   return result;
 };

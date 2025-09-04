@@ -79,6 +79,10 @@ const studentSchema = new Schema<TStudent, IStudentModel>(
       type: Schema.Types.ObjectId,
       ref: 'Academic_Semesters',
     },
+    academic_department_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'Academic_departments',
+    },
     localGuardian: {
       type: localGuardianSchema,
       required: [true, 'Local guardian information is required'],
@@ -104,14 +108,18 @@ studentSchema.pre('findOne', async function (next) {
 });
 
 // instance method
-studentSchema.methods.isUserExists = async function (id: string) {
-  const isExists = await StudentModel.findOne({ id });
-  return isExists;
+studentSchema.methods.isStudentExists = async function (id: string) {
+  const isStudentExists = await StudentModel.findOne({ id });
+  return isStudentExists;
 };
 // static method
-studentSchema.statics.is_user_email_exist = async function (email: string) {
-  const is_email_exist = await StudentModel.findOne({ email });
-  return is_email_exist;
+studentSchema.statics.is_student_id_exist = async function (id: string) {
+  const is_student_exist = await StudentModel.findOne({ id });
+  return is_student_exist;
+};
+studentSchema.statics.is_student_email_exist = async function (email: string) {
+  const is_student_exist = await StudentModel.findOne({ email });
+  return is_student_exist;
 };
 
 // User ba data model a Data type er shate just model type ta add kore dite hobe.

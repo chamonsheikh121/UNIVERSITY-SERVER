@@ -24,7 +24,8 @@ export const genarate_student_id = async (payload: TAcademic_Semester) => {
   const last_student_semester = last_id?.substring(4, 6);
   const last_student_year = last_id?.substring(0, 4);
   const is_year_match = last_student_year && payload.year === last_student_year;
-  const is_semester_match = last_student_semester && payload.code === last_student_semester;
+  const is_semester_match =
+    last_student_semester && payload.code === last_student_semester;
 
   if (last_id && is_year_match && is_semester_match) {
     current_id = last_id.substring(6);
@@ -34,11 +35,3 @@ export const genarate_student_id = async (payload: TAcademic_Semester) => {
   incremented_id = `${payload.year}${payload.code}${incremented_id}`;
   return incremented_id;
 };
-
-
-
-
-
-
-
-

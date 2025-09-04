@@ -43,6 +43,8 @@ export const create_student_zod_validation_schema = z.object({
         .optional(),
       presentAddress: z.string().min(1, 'Present address is required'),
       permanentAddress: z.string().min(1, 'Permanent address is required'),
+      academic_department_id: z.string(),
+      academic_semester_id: z.string(),
       guardian: guardian_zod_validation_schema,
       localGuardian: localGuardian_zod_validation_schema,
       profileImage: z.string().optional(),

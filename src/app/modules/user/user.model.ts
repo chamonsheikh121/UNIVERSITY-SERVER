@@ -20,7 +20,6 @@ const userSchema = new Schema<TUser>(
 );
 
 userSchema.pre('save', async function (next) {
- 
   this.password = await bcrypt.hash(this.password, Number(config.salt_rounds));
   next();
 });

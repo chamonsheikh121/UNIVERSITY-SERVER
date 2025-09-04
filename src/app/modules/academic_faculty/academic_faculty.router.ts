@@ -3,7 +3,6 @@ import { academic_faculty_controller } from './academic_faculty.controller';
 import validate_request from '../../Middle_wares/validateRequest';
 import academic_faculty_zod_validation_schema from './academic_faculty_zod_validation';
 
-
 const router = express.Router();
 
 router.get('/', academic_faculty_controller.get_all_academic_faculties);

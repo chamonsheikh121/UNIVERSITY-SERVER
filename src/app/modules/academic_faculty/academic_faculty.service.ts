@@ -20,9 +20,9 @@ const update_academic_faculty_from_db = async (id: string, payload: any) => {
     {
       name: payload.name,
     },
-   {
-    new: true
-   }
+    {
+      new: true,
+    },
   );
   return result;
 };

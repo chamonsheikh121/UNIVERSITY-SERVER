@@ -37,17 +37,19 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   academic_semester_id: Types.ObjectId;
+  academic_department_id: Types.ObjectId;
   profileImage?: string;
   isDeleted?: boolean;
 };
 
 // Interface.ts a Type banaite hobe function er.
 export type TStudentMethods = {
-  isUserExists(id: string): Promise<TStudent | null>;
+  isStudentExists(id: string): Promise<TStudent | null>;
 };
 
 export interface IStudentModel extends Model<TStudent> {
-  is_user_email_exist(id: string): Promise<TStudent | null>;
+  is_student_id_exist(id: string): Promise<TStudent | null>;
+  is_student_email_exist(email: string): Promise<TStudent | null>;
 }
 
 // Interface.ts a Aro akti type banaite hobe Model import kore.
