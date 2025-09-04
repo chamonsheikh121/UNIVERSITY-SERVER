@@ -1,7 +1,7 @@
 import express from 'express';
 import { academic_faculty_controller } from './academic_faculty.controller';
 import validate_request from '../../Middle_wares/validateRequest';
-import academic_faculty_zod_valivation_schema from './academic_faculty_zod_validation';
+import academic_faculty_zod_validation_schema from './academic_faculty_zod_validation';
 
 
 const router = express.Router();
@@ -12,7 +12,7 @@ router.patch('/:id', academic_faculty_controller.update_academic_faculty);
 
 router.post(
   '/create-academic-faculty',
-  validate_request(academic_faculty_zod_valivation_schema),
+  validate_request(academic_faculty_zod_validation_schema),
   academic_faculty_controller.create_academic_faculty,
 );
 
