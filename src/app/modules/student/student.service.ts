@@ -3,8 +3,11 @@ import StudentModel from './student.model';
 import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
 import UserModel from '../user/user.model';
+import { TStudent } from './student.interface';
 
 const getAllStudentsFromDB = async () => {
+  const count = await StudentModel.countDocuments();
+  console.log('Total students in collection:', count);
   const result = await StudentModel.find()
     .populate('academic_semester_id')
     .populate({
@@ -13,9 +16,10 @@ const getAllStudentsFromDB = async () => {
         path: 'academic_faculty_id',
       },
     });
+
   return result;
 };
-const getStudentFromDB = async (id: string) => {
+const get_single_student_from_db = async (id: string) => {
   const result = await StudentModel.findOne({ id });
   return result;
 };
@@ -66,8 +70,49 @@ const deleteStudentFromDB = async (id: string) => {
   }
 };
 
+const update_student_from_db = async (
+  id: string,
+  payload: Partial<TStudent>,
+) => {
+  console.log('payload and id', id);
+
+  const { name, guardian, localGuardian, ...remaining_student_primitive_data } =
+    payload;
+
+  const updated_student_data: Record<string, unknown> = {
+    ...remaining_student_primitive_data,
+  };
+
+  if (name && Object.keys(name).length) {
+    for (const [keys, value] of Object.entries(name)) {
+      updated_student_data[`name.${keys}`] = value;
+    }
+  }
+  if (guardian && Object.keys(guardian).length) {
+    for (const [keys, value] of Object.entries(guardian)) {
+      updated_student_data[`guardian.${keys}`] = value;
+    }
+  }
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [keys, value] of Object.entries(localGuardian)) {
+      updated_student_data[`localGuardian.${keys}`] = value;
+    }
+  }
+
+  const result = await StudentModel.findOneAndUpdate(
+    { id },
+    updated_student_data,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+  return result;
+};
+
 export const studentServices = {
   getAllStudentsFromDB,
-  getStudentFromDB,
+  get_single_student_from_db,
   deleteStudentFromDB,
+  update_student_from_db,
 };

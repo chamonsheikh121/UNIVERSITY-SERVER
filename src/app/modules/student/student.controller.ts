@@ -1,22 +1,30 @@
 import { studentServices } from './student.service';
 import { send_response } from '../../Middle_wares/send_response';
 import { catchAsync } from '../../utils/catch_async';
-
+import AppError from '../../errors/AppError';
+import HttpStatus from 'http-status';
 const getStudents = catchAsync(async (req, res, next) => {
   const result = await studentServices.getAllStudentsFromDB();
+
+  console.log('result', result);
+
+  if (!result) {
+    throw new AppError(
+      HttpStatus.NOT_FOUND,
+      'no data found { check isDeleted or not :) }',
+    );
+  }
+
   send_response(res, {
     message: 'students retrieved successfully',
     data: result,
   });
-  res.status(200).json({
-    success: true,
-  });
 });
 
-const getStudent = catchAsync(async (req, res, next) => {
+const get_single_student = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   console.log(id);
-  const result = await studentServices.getStudentFromDB(id);
+  const result = await studentServices.get_single_student_from_db(id);
   send_response(res, {
     message: 'student retrieved successfully',
     data: result,
@@ -32,8 +40,23 @@ const deleteStudent = catchAsync(async (req, res, next) => {
   });
 });
 
+const update_student = catchAsync(async (req, res, next) => {
+  const { student_id } = req.params;
+  const { studentData } = req.body;
+
+  const result = await studentServices.update_student_from_db(
+    student_id,
+    studentData,
+  );
+
+  send_response(res, {
+    message: 'student updated successfully',
+    data: result,
+  });
+});
 export const studentsControllers = {
   getStudents,
-  getStudent,
+  get_single_student,
   deleteStudent,
+  update_student,
 };

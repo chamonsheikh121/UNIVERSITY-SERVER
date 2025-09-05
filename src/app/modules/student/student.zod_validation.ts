@@ -51,3 +51,54 @@ export const create_student_zod_validation_schema = z.object({
     }),
   }),
 });
+
+// UserName schema (all optional for update)
+const update_userName_zod_validation_schema = z.object({
+  firstName: z.string().min(1).optional(),
+  middleName: z.string().optional(),
+  lastName: z.string().min(1).optional(),
+});
+
+// Guardian schema (all optional for update)
+const update_guardian_zod_validation_schema = z.object({
+  fatherName: z.string().min(1).optional(),
+  fatherOccupation: z.string().min(1).optional(),
+  fatherContactNo: z.string().min(1).optional(),
+  motherName: z.string().min(1).optional(),
+  motherOccupation: z.string().min(1).optional(),
+  motherContactNo: z.string().min(1).optional(),
+});
+
+// Local Guardian schema (all optional for update)
+const update_localGuardian_zod_validation_schema = z.object({
+  name: z.string().min(1).optional(),
+  occupation: z.string().min(1).optional(),
+  contactNo: z.string().min(1).optional(),
+  address: z.string().min(1).optional(),
+});
+
+// Main Student update schema
+export const update_student_zod_validation_schema = z.object({
+  body: z.object({
+    studentData: z
+      .object({
+        name: update_userName_zod_validation_schema.optional(),
+        gender: z.enum(['male', 'female']).optional(),
+        dateOfBirth: z.string().optional(),
+        email: z.string().email().optional(),
+        contactNo: z.string().optional(),
+        emergencyContactNo: z.string().optional(),
+        bloodGroup: z
+          .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
+          .optional(),
+        presentAddress: z.string().optional(),
+        permanentAddress: z.string().optional(),
+        academic_department_id: z.string().optional(),
+        academic_semester_id: z.string().optional(),
+        guardian: update_guardian_zod_validation_schema.optional(),
+        localGuardian: update_localGuardian_zod_validation_schema.optional(),
+        profileImage: z.string().optional(),
+      })
+      .optional(),
+  }),
+});

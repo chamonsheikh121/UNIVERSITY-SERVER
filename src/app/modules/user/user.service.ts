@@ -8,6 +8,7 @@ import { TNewUser } from './user.interface';
 import UserModel from './user.model';
 import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
+
 const create_student_to_db = async (password: string, payload: TStudent) => {
   if (await StudentModel.is_student_email_exist(payload.email)) {
     throw new Error('User already exist from statics ! ');
