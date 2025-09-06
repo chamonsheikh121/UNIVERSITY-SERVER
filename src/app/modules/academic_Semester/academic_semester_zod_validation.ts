@@ -10,7 +10,7 @@ export const academic_semester_zod_validation_schema = z.object({
     name: z.enum(semester_Names),
     code: z.enum(semester_codes),
     year: z.string(),
-    start_month: z.enum(months),
+    // start_month: z.enum(months),
     end_month: z.enum(months),
   }),
 });

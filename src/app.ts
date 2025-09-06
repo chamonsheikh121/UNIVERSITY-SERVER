@@ -21,7 +21,8 @@ app.use('/api/v1', router);
 
 // global error handler
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/', async (req: Request, res: Response) => {
+  // Promise.reject()
   res.send('Hello World! Server is working!');
 });
 

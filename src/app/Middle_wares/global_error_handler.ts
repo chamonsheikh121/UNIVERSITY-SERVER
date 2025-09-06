@@ -2,22 +2,78 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 
-import { NextFunction, Request, Response } from 'express';
+import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import { ZodError, ZodIssue } from 'zod';
+import config from '../config';
+import { TErrorSource } from '../interface/error';
+import { zodErrorHandler } from '../errors/handleZodError';
+import validation_error_handler from '../errors/handle_mongoose_validation_error';
+import cast_error_handler from '../errors/handle_mongoose_cast_Error';
+import duplicate_error_handler from '../errors/handle_duplication_error';
+import AppError from '../errors/AppError';
 
-export const global_error_handler = (
-  error: any,
-  req: Request,
-  res: Response,
-  next: NextFunction,
+export const global_error_handler: ErrorRequestHandler = (
+  error,
+  req,
+  res,
+  next,
 ) => {
-  console.log('error message:', error.message, 'error is :', error);
+  // default
+  let statusCode = 500;
+  let message = 'Internal Server Error';
 
-  const statusCode = error.satus_code || 500;
-  const message = error.message || 'Internal Server Error';
+  let errorSource: TErrorSource = [
+    {
+      path: '',
+      message: 'Internal Server Error',
+    },
+  ];
+
+  if (error instanceof ZodError) {
+    const simplifiedError = zodErrorHandler(error);
+    statusCode = simplifiedError.status_code;
+    message = simplifiedError.message;
+    errorSource = simplifiedError.errorSource;
+  } else if (error?.name == 'ValidationError') {
+    const simplifiedError = validation_error_handler(error);
+    statusCode = simplifiedError.status_code;
+    message = simplifiedError.message;
+    errorSource = simplifiedError.errorSource;
+  } else if (error?.name == 'CastError') {
+    const simplifiedError = cast_error_handler(error);
+    statusCode = simplifiedError.status_code;
+    message = simplifiedError.message;
+    errorSource = simplifiedError.errorSource;
+  } else if (error?.errorResponse?.code == 11000) {
+    const simplifiedError = duplicate_error_handler(error);
+    statusCode = simplifiedError.status_code;
+    message = simplifiedError.message;
+    errorSource = simplifiedError.errorSource;
+  } else if (error instanceof AppError) {
+    statusCode = error.status_code;
+    message = error.message;
+    errorSource = [
+      {
+        path: '',
+        message: error.message,
+      },
+    ];
+  } else if (error instanceof Error) {
+    message = error.message;
+    errorSource = [
+      {
+        path: '',
+        message: error.message,
+      },
+    ];
+  }
+
+  // console.log(error.issues);
 
   res.status(statusCode).json({
     success: false,
     message,
-    error,
+    errorSource,
+    stack: config.NODE_ENV == 'development' ? error?.stack : null,
   });
 };
