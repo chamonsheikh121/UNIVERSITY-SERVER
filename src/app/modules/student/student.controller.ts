@@ -3,10 +3,13 @@ import { send_response } from '../../Middle_wares/send_response';
 import { catchAsync } from '../../utils/catch_async';
 import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
-const getStudents = catchAsync(async (req, res, next) => {
-  const result = await studentServices.getAllStudentsFromDB();
 
-  console.log('result', result);
+
+const getStudents = catchAsync(async (req, res, next) => {
+
+
+  const result = await studentServices.getAllStudentsFromDB(req.query);
+
 
   if (!result) {
     throw new AppError(

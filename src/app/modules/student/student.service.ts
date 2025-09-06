@@ -5,10 +5,18 @@ import HttpStatus from 'http-status';
 import UserModel from '../user/user.model';
 import { TStudent } from './student.interface';
 
-const getAllStudentsFromDB = async () => {
-  const count = await StudentModel.countDocuments();
-  console.log('Total students in collection:', count);
-  const result = await StudentModel.find()
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  let searchTerm = '';
+
+  if (query?.searchTerm) {
+    searchTerm = query.searchTerm as string;
+  }
+
+  const result = await StudentModel.find({
+    $or: ['email', 'name.firstName', 'guardian.fatherName'].map((field) => {
+      return { [field]: { $regex: searchTerm , $options: "i"}};
+    }),
+  })
     .populate('academic_semester_id')
     .populate({
       path: 'academic_department_id',
