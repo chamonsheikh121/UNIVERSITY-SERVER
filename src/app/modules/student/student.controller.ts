@@ -4,13 +4,8 @@ import { catchAsync } from '../../utils/catch_async';
 import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
 
-
 const getStudents = catchAsync(async (req, res, next) => {
-
-
   const result = await studentServices.getAllStudentsFromDB(req.query);
-
-
   if (!result) {
     throw new AppError(
       HttpStatus.NOT_FOUND,
