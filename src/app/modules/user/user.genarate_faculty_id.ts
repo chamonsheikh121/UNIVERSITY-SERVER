@@ -1,4 +1,3 @@
-import { TAcademic_Semester } from '../academic_Semester/academic_semester.interface';
 import UserModel from './user.model';
 
 const last_faculty_id = async () => {

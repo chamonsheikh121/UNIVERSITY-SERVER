@@ -4,11 +4,11 @@ import { catchAsync } from '../../utils/catch_async';
 import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
 
-const createStudent = catchAsync(async (req, res, next) => {
-  const { password, studentData } = req.body;
+const create_student = catchAsync(async (req, res, next) => {
+  const { password, student_data } = req.body;
   const result = await user_services.create_student_to_db(
     password,
-    studentData,
+    student_data,
   );
 
   if (!result) {
@@ -37,10 +37,20 @@ const create_faculty = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const create_admin = catchAsync(async (req, res, next) => {
+  const { password, admin_data } = req.body;
 
-console.log('Exporting createStudent =>', createStudent);
+  const result = await user_services.create_admin_to_db(password, admin_data);
 
+  // if !result then better throw a error
+
+  send_response(res, {
+    message: 'admin created successfully',
+    data: result,
+  });
+});
 export const user_controllers = {
-  createStudent,
+  create_student,
   create_faculty,
+  create_admin,
 };

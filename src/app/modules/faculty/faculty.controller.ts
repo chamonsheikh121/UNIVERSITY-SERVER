@@ -32,10 +32,11 @@ const delete_faculty = catchAsync(async (req, res, next) => {
 
 const update_faculty = catchAsync(async (req, res, next) => {
   const { facultyId } = req.params;
+  const { faculty_data } = req.body;
 
   const result = await faculty_services.update_faculty_from_db(
     facultyId,
-    req.body,
+    faculty_data,
   );
 
   send_response(res, {
