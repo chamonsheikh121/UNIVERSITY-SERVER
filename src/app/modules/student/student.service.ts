@@ -79,17 +79,24 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   // return field_query;
 
-const student_query = new Query_Builder(StudentModel.find().populate('academic_semester_id')
-    .populate({
-      path: 'academic_department_id',
-      populate: {
-        path: 'academic_faculty_id',
-      },
-    }), query).search(student_searchable_fields).filter().sort().pagination().field_limit();
-const result =  await student_query.model_query;
-return result
-
-
+  const student_query = new Query_Builder(
+    StudentModel.find()
+      .populate('academic_semester_id')
+      .populate({
+        path: 'academic_department_id',
+        populate: {
+          path: 'academic_faculty_id',
+        },
+      }),
+    query,
+  )
+    .search(student_searchable_fields)
+    .filter()
+    .sort()
+    .pagination()
+    .field_limit();
+  const result = await student_query.model_query;
+  return result;
 };
 const get_single_student_from_db = async (id: string) => {
   const result = await StudentModel.findOne({ id });
@@ -140,7 +147,6 @@ const deleteStudentFromDB = async (id: string) => {
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
-    
   }
 };
 

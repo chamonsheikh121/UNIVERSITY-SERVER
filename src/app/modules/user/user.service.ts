@@ -8,12 +8,11 @@ import { TNewUser } from './user.interface';
 import UserModel from './user.model';
 import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
+import { TFaculty } from '../faculty/faculty.interface';
+import { genarate_faculty_id } from './user.genarate_faculty_id';
+import { FacultyModel } from '../faculty/faculty.model';
 
 const create_student_to_db = async (password: string, payload: TStudent) => {
-  if (await StudentModel.is_student_email_exist(payload.email)) {
-    throw new Error('User already exist from statics ! ');
-  }
-
   const userData: Partial<TNewUser> = {};
 
   const academic_semester = await Academic_Semester_Model.findById(
@@ -35,8 +34,6 @@ const create_student_to_db = async (password: string, payload: TStudent) => {
       throw new AppError(HttpStatus.BAD_REQUEST, 'falied to create user');
     }
 
-    console.log(result_user);
-
     payload.id = result_user[0].id;
     payload.userId = result_user[0]._id;
     const result_student = await StudentModel.create([payload], { session });
@@ -54,7 +51,43 @@ const create_student_to_db = async (password: string, payload: TStudent) => {
     await session.endSession();
   }
 };
+const create_faculty_to_db = async (password: string, payload: TFaculty) => {
+  const newUser: Partial<TNewUser> = {};
+
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    newUser.password = password || (config.default_password as string);
+    newUser.role = 'faculty';
+    newUser.status = 'in-progress';
+    newUser.id = await genarate_faculty_id();
+
+    const user_result = await UserModel.create([newUser], { session });
+
+    if (!user_result.length) {
+      throw new AppError(HttpStatus.BAD_REQUEST, ' user creation failed');
+    }
+
+    payload.id = user_result[0].id;
+    payload.userId = user_result[0]._id;
+    const faculty_result = await FacultyModel.create([payload], { session });
+
+    if (!faculty_result.length) {
+      throw new AppError(HttpStatus.BAD_REQUEST, 'failed to create faculty');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return faculty_result;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+  }
+};
 
 export const user_services = {
   create_student_to_db,
+  create_faculty_to_db,
 };

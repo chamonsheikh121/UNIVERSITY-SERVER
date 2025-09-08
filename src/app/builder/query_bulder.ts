@@ -32,10 +32,9 @@ class Query_Builder<T> {
   }
 
   sort() {
-
-
-    const sort = (this?.query?.sort as string)?.split(",")?.join(" ") || '-createdAt';
-    console.log(sort)
+    const sort =
+      (this?.query?.sort as string)?.split(',')?.join(' ') || '-createdAt';
+    console.log(sort);
     this.model_query = this.model_query.sort(sort);
     return this;
   }
@@ -44,10 +43,11 @@ class Query_Builder<T> {
     const limit: number = Number(this?.query?.limit) || 10;
     const skip: number = (page - 1) * limit;
     this.model_query = this.model_query.skip(skip).limit(limit);
-    return this
+    return this;
   }
-  field_limit(){
-    const fields = (this?.query?.fields as string)?.split(",")?.join(" ") || "-__v";
+  field_limit() {
+    const fields =
+      (this?.query?.fields as string)?.split(',')?.join(' ') || '-__v';
     this.model_query = this.model_query.select(fields);
     return this;
   }
