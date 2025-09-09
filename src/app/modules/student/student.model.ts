@@ -109,12 +109,12 @@ studentSchema.pre('findOne', async function (next) {
 
 // instance method
 studentSchema.methods.isStudentExists = async function (id: string) {
-  const isStudentExists = await StudentModel.findOne({ id });
+  const isStudentExists = await StudentModel.findById(id);
   return isStudentExists;
 };
 // static method
 studentSchema.statics.is_student_id_exist = async function (id: string) {
-  const is_student_exist = await StudentModel.findOne({ id });
+  const is_student_exist = await StudentModel.findById(id);
   return is_student_exist;
 };
 studentSchema.statics.is_student_email_exist = async function (email: string) {

@@ -11,10 +11,9 @@ const get_faculties = catchAsync(async (req, res, next) => {
   });
 });
 const get_single_faculty = catchAsync(async (req, res, next) => {
-  const { facultyId } = req.params;
-  console.log(facultyId);
+  const { _id } = req.params;
 
-  const result = await faculty_services.get_single_faculty_from_db(facultyId);
+  const result = await faculty_services.get_single_faculty_from_db(_id);
 
   send_response(res, {
     message: 'faculty retrived successfully',
@@ -22,8 +21,8 @@ const get_single_faculty = catchAsync(async (req, res, next) => {
   });
 });
 const delete_faculty = catchAsync(async (req, res, next) => {
-  const { facultyId } = req.params;
-  const result = await faculty_services.delete_faculty_from_db(facultyId);
+  const { _id } = req.params;
+  const result = await faculty_services.delete_faculty_from_db(_id);
   send_response(res, {
     message: 'faculty deleted successfully',
     data: result,
@@ -31,11 +30,11 @@ const delete_faculty = catchAsync(async (req, res, next) => {
 });
 
 const update_faculty = catchAsync(async (req, res, next) => {
-  const { facultyId } = req.params;
+  const { _id } = req.params;
   const { faculty_data } = req.body;
 
   const result = await faculty_services.update_faculty_from_db(
-    facultyId,
+    _id,
     faculty_data,
   );
 
@@ -45,7 +44,7 @@ const update_faculty = catchAsync(async (req, res, next) => {
   });
 });
 
-export const faculty_contollers = {
+export const faculty_controllers = {
   get_faculties,
   get_single_faculty,
   delete_faculty,

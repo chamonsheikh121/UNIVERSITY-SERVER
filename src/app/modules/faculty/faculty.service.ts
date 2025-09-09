@@ -9,7 +9,7 @@ const get_faculties_from_db = async () => {
   return result;
 };
 const get_single_faculty_from_db = async (id: string) => {
-  const result = await FacultyModel.find({ id });
+  const result = await FacultyModel.findById(id);
   return result;
 };
 
@@ -21,28 +21,30 @@ const delete_faculty_from_db = async (id: string) => {
   try {
     session.startTransaction();
 
-    const user_deletaion = await UserModel.findOneAndUpdate(
-      { id },
+    const faculty_deletion = await FacultyModel.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session },
     );
-
-    if (!user_deletaion) {
-      throw new AppError(HttpStatus.BAD_REQUEST, 'failded to delete user');
+    if (!faculty_deletion) {
+      throw new AppError(HttpStatus.BAD_REQUEST, 'failed to delete Faculty');
     }
 
-    const faculty_deletation = await FacultyModel.findOneAndUpdate(
-      { id },
+    const facultyId = faculty_deletion.userId;
+
+    const user_deletion = await UserModel.findByIdAndUpdate(
+      facultyId,
       { isDeleted: true },
       { new: true, session },
     );
-    if (!faculty_deletation) {
-      throw new AppError(HttpStatus.BAD_REQUEST, 'failed to delete Faculty');
+
+    if (!user_deletion) {
+      throw new AppError(HttpStatus.BAD_REQUEST, 'failded to delete user');
     }
 
     await session.commitTransaction();
     await session.endSession();
-    return faculty_deletation;
+    return faculty_deletion;
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
@@ -54,7 +56,7 @@ const update_faculty_from_db = async (
   payload: Record<string, unknown>,
 ) => {
   console.log('updating values are : ', payload);
-  const result = await FacultyModel.findOneAndUpdate({ id }, payload, {
+  const result = await FacultyModel.findByIdAndUpdate(id, payload, {
     new: true,
   });
 

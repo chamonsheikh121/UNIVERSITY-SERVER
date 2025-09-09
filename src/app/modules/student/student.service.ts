@@ -99,14 +99,12 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 const get_single_student_from_db = async (id: string) => {
-  const result = await StudentModel.findOne({ id });
+  const result = await StudentModel.findById(id);
 
   return result;
 };
 
 const deleteStudentFromDB = async (id: string) => {
-  console.log(id);
-
   const student = await StudentModel.is_student_id_exist(id);
 
   if (!student) {
@@ -120,21 +118,26 @@ const deleteStudentFromDB = async (id: string) => {
   try {
     session.startTransaction();
 
-    const delete_student = await StudentModel.findOneAndUpdate(
-      { id },
+    const delete_student = await StudentModel.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session },
     );
+
+    console.log('delete_student,', delete_student);
 
     if (!delete_student) {
       throw new AppError(HttpStatus.BAD_REQUEST, 'failed to delete student');
     }
 
-    const delete_user = await UserModel.findOneAndUpdate(
-      { id },
+    const user_id = delete_student.userId;
+    const delete_user = await UserModel.findByIdAndUpdate(
+      user_id,
       { isDeleted: true },
       { new: true, session },
     );
+
+    console.log('delete_user', delete_user);
 
     if (!delete_user) {
       throw new AppError(HttpStatus.BAD_REQUEST, 'failed to delete user');
@@ -154,7 +157,7 @@ const update_student_from_db = async (
   id: string,
   payload: Partial<TStudent>,
 ) => {
-  console.log('payload and id', id);
+  console.log(payload);
 
   const { name, guardian, localGuardian, ...remaining_student_primitive_data } =
     payload;
@@ -179,8 +182,10 @@ const update_student_from_db = async (
     }
   }
 
-  const result = await StudentModel.findOneAndUpdate(
-    { id },
+  console.log(updated_student_data);
+
+  const result = await StudentModel.findByIdAndUpdate(
+    id,
     updated_student_data,
     {
       new: true,

@@ -7,10 +7,10 @@ import { update_admin_zod_validation_schema } from './admin_zod_validation';
 const router = express.Router();
 
 router.get('/', admin_controller.get_admins);
-router.get('/:adminId', admin_controller.get_single_admin);
-router.delete('/:adminId', admin_controller.delete_admin);
+router.get('/:_id', admin_controller.get_single_admin);
+router.delete('/:_id', admin_controller.delete_admin);
 router.patch(
-  '/:adminId',
+  '/:_id',
   validate_request(update_admin_zod_validation_schema),
   admin_controller.update_admin,
 );

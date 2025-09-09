@@ -10,7 +10,7 @@ const get_admins_from_db = async () => {
   return result;
 };
 const get_single_admin_from_db = async (id: string) => {
-  const result = await AdminModel.find({ id });
+  const result = await AdminModel.findById(id);
   return result;
 };
 
@@ -22,28 +22,30 @@ const delete_admin_from_db = async (id: string) => {
   try {
     session.startTransaction();
 
-    const user_deletaion = await UserModel.findOneAndUpdate(
-      { id },
+    const admin_deletion = await AdminModel.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session },
     );
-
-    if (!user_deletaion) {
-      throw new AppError(HttpStatus.BAD_REQUEST, 'failded to delete user');
+    if (!admin_deletion) {
+      throw new AppError(HttpStatus.BAD_REQUEST, 'failed to delete admin');
     }
 
-    const admin_deletation = await AdminModel.findOneAndUpdate(
-      { id },
+    const userId = admin_deletion.userId;
+
+    const user_deletion = await UserModel.findByIdAndUpdate(
+      userId,
       { isDeleted: true },
       { new: true, session },
     );
-    if (!admin_deletation) {
-      throw new AppError(HttpStatus.BAD_REQUEST, 'failed to delete Faculty');
+
+    if (!user_deletion) {
+      throw new AppError(HttpStatus.BAD_REQUEST, 'failed to delete user');
     }
 
     await session.commitTransaction();
     await session.endSession();
-    return admin_deletation;
+    return admin_deletion;
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
@@ -54,8 +56,6 @@ const update_admin_from_db = async (
   id: string,
   payload: Record<string, unknown>,
 ) => {
-  console.log('I am from admin server: ', id, payload);
-
   const { name, ...remaining_admin_primitive_data } = payload;
 
   const updated_admin_data: Record<string, unknown> = {
@@ -68,7 +68,7 @@ const update_admin_from_db = async (
     }
   }
 
-  const result = await AdminModel.findOneAndUpdate({ id }, updated_admin_data, {
+  const result = await AdminModel.findByIdAndUpdate(id, updated_admin_data, {
     new: true,
     runValidators: true,
   });
