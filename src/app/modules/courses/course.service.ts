@@ -62,15 +62,13 @@ const update_course_from_db = async (
 
   // if pre_requisite_courses got any changes
 
-  console.log(pre_requisite_courses);
-
   const preReqs = pre_requisite_courses as Array<{
     course_id: string;
     isDeleted?: boolean;
   }>;
 
   if (preReqs && preReqs.length > 0) {
-    const deleted_pre_rqisites = preReqs
+    const deleting_prerequsit_course_id = preReqs
       ?.filter((el) => el.course_id && el.isDeleted)
       .map((el) => el.course_id);
 
@@ -78,14 +76,40 @@ const update_course_from_db = async (
       id,
       {
         $pull: {
-          pre_requisite_courses: { course_id: { $in: deleted_pre_rqisites } },
+          pre_requisite_courses: {
+            course_id: { $in: deleting_prerequsit_course_id },
+          },
         },
       },
       {
         new: true,
       },
     );
-    return delete_pre_requisite_cources;
+
+    const course = await CourseModel.findById(id).lean();
+    const existingIds = course?.pre_requisite_courses?.map((c) =>
+      String(c.course_id),
+    );
+    console.log(existingIds);
+
+    const adding_prerequsit_course_id = preReqs.filter(
+      (el) =>
+        el.course_id && !el.isDeleted && !existingIds?.includes(el.course_id),
+    );
+
+    console.log(adding_prerequsit_course_id);
+
+    const add_prerequsit_course = await CourseModel.findByIdAndUpdate(id, {
+      $addToSet: {
+        pre_requisite_courses: { $each: adding_prerequsit_course_id },
+      },
+    });
+
+    if (delete_pre_requisite_cources && add_prerequsit_course) {
+      return add_prerequsit_course;
+    } else {
+      return delete_pre_requisite_cources;
+    }
   }
 
   return update_basic_course_info;
