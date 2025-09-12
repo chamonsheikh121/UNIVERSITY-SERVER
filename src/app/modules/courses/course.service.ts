@@ -13,20 +13,6 @@ const create_course_from_db = async (payload: TCourse) => {
   return result;
 };
 
-const assign_faculties_and_course_to_db = async (
-  id: string,
-  payload: Partial<TCourse_faculties>,
-) => {
-  const result = await Course_Faculties_Model.findByIdAndUpdate(
-    id,
-    {
-      $addToSet: { faculties: { $each: payload } },
-    },
-    { upsert: true },
-  );
-  return result;
-};
-
 const get_courses_from_db = async (query: Record<string, unknown>) => {
   const courseQuery = new Query_Builder(
     CourseModel.find().populate('pre_requisite_courses.course_id'),
@@ -161,11 +147,36 @@ const update_course_from_db = async (
   }
 };
 
+const assign_faculties_and_course_to_db = async (
+  id: string,
+  payload: Partial<TCourse_faculties>,
+) => {
+  console.log(id);
+  const result = await Course_Faculties_Model.findByIdAndUpdate(
+    id,
+    { course_id: id, $addToSet: { faculties: { $each: payload } } },
+    { upsert: true, new: true },
+  );
+  return result;
+};
+const remove_faculties_and_course_to_db = async (
+  id: string,
+  payload: Partial<TCourse_faculties>,
+) => {
+  const result = await Course_Faculties_Model.findByIdAndUpdate(
+    id,
+    { $pull: { faculties: { $in: payload } } },
+    { upsert: true, new: true },
+  );
+  return result;
+};
+
 export const course_services = {
   create_course_from_db,
   get_courses_from_db,
   get_single_course_from_db,
   delete_course_from_db,
   update_course_from_db,
-  assign_faculties_and_course_to_db
+  assign_faculties_and_course_to_db,
+  remove_faculties_and_course_to_db,
 };

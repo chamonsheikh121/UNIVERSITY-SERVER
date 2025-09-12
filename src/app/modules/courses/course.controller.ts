@@ -13,18 +13,6 @@ const create_course = catchAsync(async (req, res, next) => {
   });
 });
 
-const assign_course_faculties = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const result = await course_services.assign_faculties_and_course_to_db(
-    id,
-    req.body,
-  );
-  send_response(res, {
-    message: 'faculty assigned successfully',
-    data: result,
-  });
-});
-
 const get_courses = catchAsync(async (req, res, next) => {
   const result = await course_services.get_courses_from_db();
 
@@ -63,6 +51,34 @@ const update_course = catchAsync(async (req, res, next) => {
   });
 });
 
+const assign_course_faculties = catchAsync(async (req, res, next) => {
+  const { _id } = req.params;
+  const { faculties } = req.body.course_faculties_data;
+
+  const result = await course_services.assign_faculties_and_course_to_db(
+    _id,
+    faculties,
+  );
+  send_response(res, {
+    message: 'faculty assigned successfully',
+    data: result,
+  });
+});
+
+const remove_course_faculties = catchAsync(async (req, res, next) => {
+  const { _id } = req.params;
+  const { faculties } = req.body.course_faculties_data;
+
+  const result = await course_services.remove_faculties_and_course_to_db(
+    _id,
+    faculties,
+  );
+  send_response(res, {
+    message: 'faculty assigned successfully',
+    data: result,
+  });
+});
+
 export const course_contollers = {
   create_course,
   get_courses,
@@ -70,4 +86,5 @@ export const course_contollers = {
   delete_course,
   update_course,
   assign_course_faculties,
+  remove_course_faculties,
 };
