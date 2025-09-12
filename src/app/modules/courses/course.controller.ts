@@ -12,6 +12,19 @@ const create_course = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+
+const assign_course_faculties = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const result = await course_services.assign_faculties_and_course_to_db(
+    id,
+    req.body,
+  );
+  send_response(res, {
+    message: 'faculty assigned successfully',
+    data: result,
+  });
+});
+
 const get_courses = catchAsync(async (req, res, next) => {
   const result = await course_services.get_courses_from_db();
 
@@ -56,4 +69,5 @@ export const course_contollers = {
   get_single_course,
   delete_course,
   update_course,
+  assign_course_faculties,
 };

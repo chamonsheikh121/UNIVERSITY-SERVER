@@ -1,3 +1,4 @@
+import { string } from 'joi';
 import { z } from 'zod';
 
 const preRequisite_zod_validation_schema = z.object({
@@ -36,3 +37,12 @@ export const update_course_zod_validation_schema = z.object({
     }),
   }),
 });
+
+
+export const create_faculty_and_couse_into_db_zod_validation_schema = z.object({
+  body:z.object({
+    course_faculties_data: z.object({
+      course_id: z.string(),
+    })
+  })
+})

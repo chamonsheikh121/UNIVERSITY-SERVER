@@ -56,6 +56,8 @@ const create_student_to_db = async (password: string, payload: TStudent) => {
     await session.endSession();
   }
 };
+
+
 const create_faculty_to_db = async (password: string, payload: TFaculty) => {
   // need to check here if email exist or not
 

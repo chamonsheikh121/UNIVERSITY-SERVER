@@ -5,7 +5,8 @@ import { update_course_zod_validation_schema } from './course_zod_validation';
 import validate_request from '../../Middle_wares/validateRequest';
 
 const router = express.Router();
-router.post('/create-course', course_contollers.create_course);
+router.post('/create-course', course_contollers.create_course); 
+router.put('/:_id/assign-faculties', course_contollers.assign_course_faculties); 
 router.get('/', course_contollers.get_courses);
 router.get('/:_id', course_contollers.get_single_course);
 router.delete('/:_id', course_contollers.delete_course);
