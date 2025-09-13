@@ -28,11 +28,14 @@ const offeredCourseSchema = new Schema<TOffered_course>(
     faculty: { type: Schema.Types.ObjectId, ref: 'Faculties', required: true },
     max_capacity: { type: Number, required: true },
     section: { type: Number, required: true },
-     days: [{ type: String, enum: days_constance, required: true }], // ✅ array
+    days: [{ type: String, enum: days_constance, required: true }], // ✅ array
     start_time: { type: String, required: true },
     end_time: { type: String, required: true },
   },
   { timestamps: true },
 );
 
-export const Offered_Course_Model = model('Offered_courses', offeredCourseSchema);
+export const Offered_Course_Model = model(
+  'Offered_courses',
+  offeredCourseSchema,
+);

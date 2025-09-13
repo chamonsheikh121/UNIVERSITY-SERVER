@@ -1,21 +1,20 @@
-
 import { send_response } from '../../Middle_wares/send_response';
 import { catchAsync } from '../../utils/catch_async';
 import { offered_course_services } from './offered_course.service';
 
+const create_offered_course = catchAsync(async (req, res, next) => {
+  const { offered_course_data } = req.body;
 
-const create_offered_course = catchAsync( async (req, res, next) => {
+  const result =
+    await offered_course_services.create_offered_course_to_db(
+      offered_course_data,
+    );
 
-  const {offered_course_data} = req.body
-
-    const result = await offered_course_services.create_offered_course_to_db(offered_course_data)
-
-   send_response(res,{
-    message:'offered course created successfully',
-    data: result
-   })
-  },
-);
+  send_response(res, {
+    message: 'offered course created successfully',
+    data: result,
+  });
+});
 
 // const get_all_offered_courses = async (req: Request, res: Response) => {
 //   try {

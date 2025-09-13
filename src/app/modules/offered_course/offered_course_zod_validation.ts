@@ -32,14 +32,17 @@ const create_offered_course_zod_validation_schema = z.object({
           },
         ),
       })
-      .refine((offered_course_data) => {
-        const start = new Date(`1970-01-01${offered_course_data.start_time}`);
-        const end = new Date(`1970-01-01${offered_course_data.end_time}`);
+      .refine(
+        (offered_course_data) => {
+          const start = new Date(`1970-01-01${offered_course_data.start_time}`);
+          const end = new Date(`1970-01-01${offered_course_data.end_time}`);
 
-        return end > start;
-      },{
-        message: 'end time must be greater than start time'
-      }),
+          return end > start;
+        },
+        {
+          message: 'end time must be greater than start time',
+        },
+      ),
   }),
 });
 
