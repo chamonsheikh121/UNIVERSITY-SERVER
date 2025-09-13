@@ -1,4 +1,5 @@
-import { Model, ObjectId, Types } from 'mongoose';
+/* eslint-disable no-unused-vars */
+import { Model, Types } from 'mongoose';
 
 export type TGuardian = {
   fatherName: string;

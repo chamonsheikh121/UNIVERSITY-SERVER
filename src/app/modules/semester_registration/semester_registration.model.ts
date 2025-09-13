@@ -17,7 +17,7 @@ const semester_registration_schema = new Schema<TSemesterRegistration>(
       type: String,
       enum: semester_registration_status,
       required: true,
-      default: 'UPCOMING',
+      default: 'UPCOMMING',
     },
     start_date: {
       type: Date,

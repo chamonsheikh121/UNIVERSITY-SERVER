@@ -55,13 +55,20 @@ const update_registered_semester_to_db = async (
     );
   }
 
-  if (is_exist.status == 'ENDED') {
+  if (is_exist?.status == 'ENDED') {
     throw new AppError(
       httpstatus.BAD_REQUEST,
       'You can not udpate and ended registered semester details',
     );
+  } else if (
+    (is_exist?.status == 'ONGOING' && payload?.status == 'UPCOMMING') ||
+    (is_exist?.status == 'UPCOMMING' && payload.status == 'ENDED')
+  ) {
+    throw new AppError(
+      httpstatus.BAD_REQUEST,
+      `You can not change status from ${is_exist?.status} to ${payload?.status}`,
+    );
   }
-
   const result = await SemesterRegistrationModel.findByIdAndUpdate(
     id,
     payload,
