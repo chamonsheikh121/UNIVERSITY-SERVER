@@ -5,34 +5,19 @@ import HttpStatus from 'http-status';
 import bcrypt from 'bcrypt';
 
 const login_user_to_db = async (payload: TAuth_user) => {
-  const id = payload.id;
-
-  const is_user_exist = await UserModel.findOne({ id });
-  console.log(is_user_exist);
-  if (!is_user_exist) {
+  const user = await UserModel.is_user_exist_by_custom_id(payload?.id);
+  if (!user) {
     throw new AppError(HttpStatus.NOT_FOUND, 'user not found');
   }
-
-  const is_blocked = is_user_exist.status == 'blocked';
-  if (is_blocked) {
+  if (user.status == 'blocked') {
     throw new AppError(HttpStatus.NOT_FOUND, 'This user already blocked');
   }
-  const is_deleted = is_user_exist.isDeleted;
-  if (is_deleted) {
+  if (user.isDeleted) {
     throw new AppError(HttpStatus.NOT_FOUND, 'This user already deleted');
   }
-
-  //validate bcrypt password
-  const is_password_match = await bcrypt.compare(
-    payload.password,
-    is_user_exist.password,
-  );
-  if (!is_password_match) {
-    throw new AppError(HttpStatus.NOT_FOUND, 'password doesnt match');
+  if (!(await UserModel.validate_password(payload?.password, user?.password))) {
+    throw new AppError(HttpStatus.NOT_FOUND, "password doesn't match");
   }
-
-
-
 };
 
 export const auth_services = {

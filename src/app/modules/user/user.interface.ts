@@ -18,4 +18,8 @@ export type TNewUser = {
 
 export interface IUser extends Model<TUser> {
   is_user_exist_by_custom_id(id: string): Promise<TUser | null>;
+  validate_password(
+    original_password: string,
+    hashed_password: string,
+  ): Promise<boolean>;
 }

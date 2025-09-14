@@ -24,14 +24,21 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.statics.is_user_exist_by_custom_id = async function (id: string) {
+  const user = await this.findOne({ id });
+  return user;
+};
+userSchema.statics.validate_password = async function (
+  original_password,
+  hashed_password,
+) {
+  const is_password_match = await bcrypt.compare(
+    original_password,
+    hashed_password,
+  );
+  return is_password_match;
+};
 
-
-userSchema.statics.is_user_exist_by_custom_id = async function(id: string){
-
-  const user = await this.f
-
-}
-
-const UserModel = model<TUser>('Users', userSchema);
+const UserModel = model<TUser, IUser>('Users', userSchema);
 
 export default UserModel;
