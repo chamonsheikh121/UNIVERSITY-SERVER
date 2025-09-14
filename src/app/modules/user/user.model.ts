@@ -1,9 +1,9 @@
 import { Schema, model } from 'mongoose';
-import { TUser } from './user.interface';
+import { IUser, TUser } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, IUser>(
   {
     id: { type: String },
     password: { type: String, required: true },
@@ -23,6 +23,14 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, Number(config.salt_rounds));
   next();
 });
+
+
+
+userSchema.statics.is_user_exist_by_custom_id = async function(id: string){
+
+  const user = await this.f
+
+}
 
 const UserModel = model<TUser>('Users', userSchema);
 

@@ -1,3 +1,5 @@
+import { Model } from 'mongoose';
+
 export type TUser = {
   id?: string;
   password: string;
@@ -13,3 +15,7 @@ export type TNewUser = {
   role: 'admin' | 'student' | 'faculty';
   status: 'in-progress' | 'blocked';
 };
+
+export interface IUser extends Model<TUser> {
+  is_user_exist_by_custom_id(id: string): Promise<TUser | null>;
+}
