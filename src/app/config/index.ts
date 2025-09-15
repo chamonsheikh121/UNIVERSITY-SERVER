@@ -9,4 +9,5 @@ export default {
   mongodb_url: process.env.MONGODB_URL,
   salt_rounds: process.env.SALT_ROUNDS,
   default_password: process.env.DEFAULT_PASSWORD,
+  JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
 };

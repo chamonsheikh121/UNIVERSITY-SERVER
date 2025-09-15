@@ -3,6 +3,8 @@ import { catchAsync } from '../../utils/catch_async';
 import { faculty_services } from './faculty.service';
 
 const get_faculties = catchAsync(async (req, res, next) => {
+  console.log('test', req.user);
+
   const result = await faculty_services.get_faculties_from_db();
 
   send_response(res, {
@@ -12,6 +14,7 @@ const get_faculties = catchAsync(async (req, res, next) => {
 });
 const get_single_faculty = catchAsync(async (req, res, next) => {
   const { _id } = req.params;
+  console.log('test', req.user);
 
   const result = await faculty_services.get_single_faculty_from_db(_id);
 

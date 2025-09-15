@@ -18,6 +18,10 @@ import { AdminModel } from '../admin/admin.model';
 const create_student_to_db = async (password: string, payload: TStudent) => {
   // need to check here if email exist or not
 
+  if (await StudentModel.is_student_email_exist(payload?.email)) {
+    throw new AppError(HttpStatus.BAD_REQUEST, 'student already exist');
+  }
+
   const userData: Partial<TNewUser> = {};
 
   const academic_semester = await Academic_Semester_Model.findById(
