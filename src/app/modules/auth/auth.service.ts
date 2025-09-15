@@ -44,9 +44,6 @@ const chagne_password_into_db = async (
   payload: TChange_password,
 ) => {
   const user = await UserModel.is_user_exist_by_custom_id(decoded_user.id);
-
-  console.log(user);
-
   if (!user) {
     throw new AppError(HttpStatus.NOT_FOUND, 'user not found');
   }

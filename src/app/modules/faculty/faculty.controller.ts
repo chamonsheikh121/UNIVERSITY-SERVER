@@ -3,7 +3,7 @@ import { catchAsync } from '../../utils/catch_async';
 import { faculty_services } from './faculty.service';
 
 const get_faculties = catchAsync(async (req, res, next) => {
-  console.log('test', req.user);
+  // console.log('test', req.user);
 
   const result = await faculty_services.get_faculties_from_db();
 
