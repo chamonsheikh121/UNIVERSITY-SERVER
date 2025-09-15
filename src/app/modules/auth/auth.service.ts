@@ -3,8 +3,9 @@ import AppError from '../../errors/AppError';
 import UserModel from '../user/user.model';
 import { TAuth_user, TChange_password } from './auth.interface';
 import HttpStatus from 'http-status';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { create_token } from './auth.utiles';
 
 const login_user_to_db = async (payload: TAuth_user) => {
   const user = await UserModel.is_user_exist_by_custom_id(payload?.id);
@@ -23,18 +24,24 @@ const login_user_to_db = async (payload: TAuth_user) => {
   }
 
   const jwt_payload = {
-    id: user.id,
-    role: user.role,
+    id: user.id as string,
+    role: user.role as string,
   };
 
-  const accessToken = jwt.sign(
+  const accessToken = create_token(
     jwt_payload,
     config.JWT_ACCESS_SECRET as string,
-    { expiresIn: 60 * 60 },
+    config.JWT_ACCESS_SECRET_TIME as SignOptions['expiresIn'],
+  );
+  const refreshToken = create_token(
+    jwt_payload,
+    config.JWT_ACCESS_SECRET as string,
+    config.JWT_REFRESH_SECRET_TIME as SignOptions['expiresIn'],
   );
 
   return {
     accessToken,
+    refreshToken,
     need_password_change: user?.need_password_change,
   };
 };

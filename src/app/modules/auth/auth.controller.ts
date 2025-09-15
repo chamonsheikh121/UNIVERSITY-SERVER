@@ -2,13 +2,27 @@ import { JwtPayload } from 'jsonwebtoken';
 import { send_response } from '../../Middle_wares/send_response';
 import { catchAsync } from '../../utils/catch_async';
 import { auth_services } from './auth.service';
+import config from '../../config';
 
 const login_user = catchAsync(async (req, res, next) => {
   const { auth_data } = req.body;
   const result = await auth_services.login_user_to_db(auth_data);
+const {accessToken, refreshToken, need_password_change} = result
+
+res.cookie('refresh_token', refreshToken, {
+  secure: config.NODE_ENV == 'production',
+  httpOnly: true
+})
+res.cookie('access_token', accessToken, {
+  secure: config.NODE_ENV == 'production',
+  httpOnly: true
+})
+
   send_response(res, {
     message: 'user logged in successfully',
-    data: result,
+    data: {
+      accessToken, need_password_change
+    },
   });
 });
 

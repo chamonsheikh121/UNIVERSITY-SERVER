@@ -10,4 +10,7 @@ export default {
   salt_rounds: process.env.SALT_ROUNDS,
   default_password: process.env.DEFAULT_PASSWORD,
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
+  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
+  JWT_ACCESS_SECRET_TIME: process.env.JWT_ACCESS_SECRET_TIME,
+  JWT_REFRESH_SECRET_TIME: process.env.JWT_REFRESH_SECRET_TIME,
 };
