@@ -5,6 +5,7 @@ export type TUser = {
   id?: string;
   password: string;
   need_password_change?: boolean; // default true
+  last_pass_changed_at?: Date; // default true
   role: 'admin' | 'student' | 'faculty';
   status: 'in-progress' | 'blocked';
   isDeleted?: boolean;

@@ -17,13 +17,13 @@ router.post(
 );
 router.post(
   '/create-faculty',
-  authorizer(user_roles.admin),
+
   validate_request(create_faculty_zod_validation_schema),
   user_controllers.create_faculty,
 );
 router.post(
   '/create-admin',
-  authorizer(user_roles.admin),
+
   validate_request(create_admin_zod_validation_schema),
   user_controllers.create_admin,
 );

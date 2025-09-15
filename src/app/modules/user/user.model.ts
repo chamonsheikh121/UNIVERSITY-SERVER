@@ -6,8 +6,9 @@ import config from '../../config';
 const userSchema = new Schema<TUser, IUser>(
   {
     id: { type: String },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: 0 },
     need_password_change: { type: Boolean, default: true },
+    last_pass_changed_at: { type: Date },
     role: { type: String, enum: ['admin', 'student', 'faculty'] },
     status: {
       type: String,
@@ -25,7 +26,7 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.statics.is_user_exist_by_custom_id = async function (id: string) {
-  const user = await this.findOne({ id });
+  const user = await this.findOne({ id }).select('+password');
   return user;
 };
 userSchema.statics.validate_password = async function (

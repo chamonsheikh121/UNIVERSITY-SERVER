@@ -1,3 +1,4 @@
+import { JwtPayload } from 'jsonwebtoken';
 import { send_response } from '../../Middle_wares/send_response';
 import { catchAsync } from '../../utils/catch_async';
 import { auth_services } from './auth.service';
@@ -10,10 +11,26 @@ const login_user = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+
+const change_password = catchAsync(async (req, res, next) => {
+  const { password_data } = req.body;
+
+  const decoded_user = req.user as JwtPayload;
+
+  const result = await auth_services.chagne_password_into_db(
+    decoded_user,
+    password_data,
+  );
+  send_response(res, {
+    message: 'password changed successfully',
+    data: result,
+  });
+});
 export const auth_controller = {
   login_user,
 };
 
 export const auth_controllers = {
   login_user,
+  change_password,
 };
