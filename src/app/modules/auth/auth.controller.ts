@@ -32,7 +32,7 @@ const change_password = catchAsync(async (req, res, next) => {
 
   const decoded_user = req.user as JwtPayload;
 
-  const result = await auth_services.chagne_password_into_db(
+  const result = await auth_services.change_password_into_db(
     decoded_user,
     password_data,
   );
@@ -57,9 +57,8 @@ const refresh_token = catchAsync(async (req, res, next) => {
 });
 
 const forget_password = catchAsync(async (req, res, next) => {
-  const { forget_pass_data } = req.body
-  const result =
-    await auth_services.create_reset_link(forget_pass_data?.id);
+  const { forget_pass_data } = req.body;
+  const result = await auth_services.create_reset_link(forget_pass_data?.id);
   send_response(res, {
     message: 'link genarated successfully',
     data: result,
@@ -70,5 +69,5 @@ export const auth_controllers = {
   login_user,
   change_password,
   refresh_token,
-  forget_password
+  forget_password,
 };

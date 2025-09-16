@@ -107,8 +107,6 @@ const create_admin_to_db = async (password: string, payload: TAdmin) => {
 
   const session = await mongoose.startSession();
   try {
-
-    
     session.startTransaction();
     newUser.email = payload?.email;
     newUser.role = 'admin';

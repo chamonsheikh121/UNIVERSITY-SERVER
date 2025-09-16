@@ -6,6 +6,7 @@ import HttpStatus from 'http-status';
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { create_token } from './auth.utiles';
+import { mail_sender } from '../../utils/sendMail';
 
 const login_user_to_db = async (payload: TAuth_user) => {
   const user = await UserModel.is_user_exist_by_custom_id(payload?.id);
@@ -46,7 +47,7 @@ const login_user_to_db = async (payload: TAuth_user) => {
   };
 };
 
-const chagne_password_into_db = async (
+const change_password_into_db = async (
   decoded_user: JwtPayload,
   payload: TChange_password,
 ) => {
@@ -137,10 +138,8 @@ const create_access_token_by_refresh_token = async (refresh_token: string) => {
   };
 };
 
-const create_reset_link =async(id: string)=>{
-
+const create_reset_link = async (id: string) => {
   const user = await UserModel.is_user_exist_by_custom_id(id);
- 
 
   if (!user) {
     throw new AppError(HttpStatus.NOT_FOUND, 'user not found');
@@ -161,16 +160,51 @@ const create_reset_link =async(id: string)=>{
     config.JWT_ACCESS_SECRET as string,
     '10m',
   );
-  const reset_ui_link = `http://localhost:5173?id=${id}&&token=${reset_pass_token}`
 
-  return reset_ui_link
+  const reset_ui_link = `http://localhost:5173?id=${id}&&token=${reset_pass_token}`;
 
+  const resetPasswordHtml = `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 24px; color: #333;">
+  <h2 style="color: #4f46e5; text-align: center; margin-bottom: 20px;">Password Reset Request</h2>
+  
+  <p style="font-size: 15px; line-height: 1.6; margin-bottom: 16px;">
+    We received a request to reset the password for your account. Click the button below to reset your password.
+  </p>
+  
+  <div style="text-align: center; margin: 28px 0;">
+    <a href="${reset_ui_link}" target="_blank" 
+       style="background: linear-gradient(90deg,#4f46e5,#06b6d4); color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; display: inline-block;">
+       Reset Password
+    </a>
+  </div>
+  
+  <p style="font-size: 14px; color: #555; margin-bottom: 12px;">
+    ⚠️ This link will be valid for <strong>10 minutes</strong>.  
+    If you didn’t request a password reset, you can safely ignore this email.
+  </p>
+  
+  <p style="font-size: 13px; color: #777; margin-top: 20px;">
+    Or copy and paste this link into your browser:  
+    <br>
+    <a href="${reset_ui_link}" target="_blank" style="color:#4f46e5; word-break: break-all;">${reset_ui_link}</a>
+  </p>
+  
+  <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;">
+  
+  <p style="font-size: 12px; color: #aaa; text-align: center;">
+    &copy; ${new Date().getFullYear()} Your Company. All rights reserved.
+  </p>
+</div>
+`;
 
-}
+  mail_sender(user?.email as string, resetPasswordHtml);
+
+  return reset_ui_link;
+};
 
 export const auth_services = {
   login_user_to_db,
-  chagne_password_into_db,
+  change_password_into_db,
   create_access_token_by_refresh_token,
-  create_reset_link
+  create_reset_link,
 };

@@ -26,7 +26,7 @@ export const refresh_token_zod_validation_schema = z.object({
 export const forget_password_zod_validation_schema = z.object({
   body: z.object({
     forget_pass_data: z.object({
-      id: z.string().min(1,'id is required')
-    })
+      id: z.string().min(1, 'id is required'),
+    }),
   }),
 });
