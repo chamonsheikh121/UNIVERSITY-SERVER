@@ -6,6 +6,7 @@ import {
   auth_login_zod_validation_schema,
   forget_password_zod_validation_schema,
   refresh_token_zod_validation_schema,
+  reset_password_zod_validation_schema,
 } from './auth_zod_validation';
 import authorizer from '../../Middle_wares/authorization';
 import { user_roles } from '../user/user.constance';
@@ -32,6 +33,11 @@ router.post(
   '/forget-password',
   validate_request(forget_password_zod_validation_schema),
   auth_controllers.forget_password,
+);
+router.post(
+  '/reset-password',
+  validate_request(reset_password_zod_validation_schema),
+  auth_controllers.reset_password,
 );
 
 export const auth_router = router;

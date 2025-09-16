@@ -5,6 +5,9 @@ import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
 
 const create_student = catchAsync(async (req, res, next) => {
+
+console.log(req.files)
+
   const { password, student_data } = req.body;
   const result = await user_services.create_student_to_db(
     password,
@@ -49,8 +52,34 @@ const create_admin = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+
+const get_me = catchAsync(async (req, res, next) => {
+  const { id, role } = req.user;
+
+  const result = await user_services.get_me_from_db(id, role);
+  send_response(res, {
+    message: 'Retrieved my data successfully',
+    data: result,
+  });
+});
+
+const change_user_status = catchAsync(async (req, res, next) => {
+  const { role } = req.user;
+  const {_id} = req.params
+  const {change_status_data} = req.body
+
+  const result = await user_services.change_user_status_to_db(_id, role, change_status_data?.status);
+  
+  send_response(res, {
+    message: `user status changed successfully`,
+    data: result,
+  });
+});
+
 export const user_controllers = {
   create_student,
   create_faculty,
   create_admin,
+  get_me,
+  change_user_status
 };

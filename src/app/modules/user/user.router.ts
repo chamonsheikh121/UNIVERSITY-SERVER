@@ -6,6 +6,7 @@ import { create_faculty_zod_validation_schema } from '../faculty/faculty_zod_val
 import { create_admin_zod_validation_schema } from '../admin/admin_zod_validation';
 import authorizer from '../../Middle_wares/authorization';
 import { user_roles } from './user.constance';
+import { user_satus_change_zod_validation_schema } from './user.zod_validation';
 
 const router = express.Router();
 
@@ -26,6 +27,17 @@ router.post(
 
   validate_request(create_admin_zod_validation_schema),
   user_controllers.create_admin,
+);
+router.post(
+  '/change-status/:_id',
+  authorizer(user_roles.admin),
+  validate_request(user_satus_change_zod_validation_schema),
+  user_controllers.change_user_status,
+);
+router.get(
+  '/me',
+  authorizer(user_roles.admin, user_roles.faculty, user_roles.student),
+  user_controllers.get_me,
 );
 
 export const user_router = router;

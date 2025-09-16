@@ -29,7 +29,6 @@ const login_user = catchAsync(async (req, res, next) => {
 
 const change_password = catchAsync(async (req, res, next) => {
   const { password_data } = req.body;
-
   const decoded_user = req.user as JwtPayload;
 
   const result = await auth_services.change_password_into_db(
@@ -65,9 +64,20 @@ const forget_password = catchAsync(async (req, res, next) => {
   });
 });
 
+const reset_password = catchAsync(async (req, res, next) => {
+  const { reset_pass_data } = req.body;
+  const token = req.headers.authorization
+  const result = await auth_services.reset_password_and_update_to_db(token, reset_pass_data);
+  send_response(res, {
+    message: 'password updated successfully',
+    data: result,
+  });
+});
+
 export const auth_controllers = {
   login_user,
   change_password,
   refresh_token,
   forget_password,
+  reset_password
 };

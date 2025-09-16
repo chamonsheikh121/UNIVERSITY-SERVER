@@ -12,16 +12,16 @@ const login_user_to_db = async (payload: TAuth_user) => {
   const user = await UserModel.is_user_exist_by_custom_id(payload?.id);
 
   if (!user) {
-    throw new AppError(HttpStatus.NOT_FOUND, 'user not found');
+    throw new AppError(HttpStatus.FORBIDDEN, 'user not found');
   }
   if (user.status == 'blocked') {
-    throw new AppError(HttpStatus.NOT_FOUND, 'This user already blocked');
+    throw new AppError(HttpStatus.FORBIDDEN, 'This user already blocked');
   }
   if (user.isDeleted) {
-    throw new AppError(HttpStatus.NOT_FOUND, 'This user already deleted');
+    throw new AppError(HttpStatus.FORBIDDEN, 'This user already deleted');
   }
   if (!(await UserModel.validate_password(payload?.password, user?.password))) {
-    throw new AppError(HttpStatus.NOT_FOUND, "password doesn't match");
+    throw new AppError(HttpStatus.FORBIDDEN, "password doesn't match");
   }
 
   const jwt_payload = {
@@ -161,7 +161,7 @@ const create_reset_link = async (id: string) => {
     '10m',
   );
 
-  const reset_ui_link = `http://localhost:5173?id=${id}&&token=${reset_pass_token}`;
+  const reset_ui_link = `${config.RESET_PASSWORD_UI_DOMAIN}?id=${id}&&token=${reset_pass_token}`;
 
   const resetPasswordHtml = `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 24px; color: #333;">
@@ -202,9 +202,59 @@ const create_reset_link = async (id: string) => {
   return reset_ui_link;
 };
 
+const reset_password_and_update_to_db = async (
+  token: string,
+  payload: { id: string; new_password: string },
+) => {
+  const decoded = jwt.verify(
+    token,
+    config.JWT_ACCESS_SECRET as string,
+  ) as JwtPayload;
+  const { id, role } = decoded;
+
+  if (id != payload?.id) {
+    throw new AppError(
+      HttpStatus.NOT_FOUND,
+      'sended user id and token user id is doesnt match',
+    );
+  }
+  const user = await UserModel.is_user_exist_by_custom_id(payload?.id);
+  if (!user) {
+    throw new AppError(HttpStatus.NOT_FOUND, 'user not found');
+  }
+  if (user.status == 'blocked') {
+    throw new AppError(HttpStatus.NOT_FOUND, 'This user already blocked');
+  }
+  if (user.isDeleted) {
+    throw new AppError(HttpStatus.NOT_FOUND, 'This user already deleted');
+  }
+
+  const hash_new_password = await bcrypt.hash(
+    payload?.new_password,
+    Number(config.salt_rounds),
+  );
+
+  const result = await UserModel.findOneAndUpdate(
+    {
+      id,
+      role: role,
+    },
+    {
+      password: hash_new_password,
+      need_password_change: false,
+      last_pass_changed_at: new Date(),
+    },
+    {
+      new: true,
+    },
+  );
+  return result;
+};
+
 export const auth_services = {
   login_user_to_db,
   change_password_into_db,
   create_access_token_by_refresh_token,
   create_reset_link,
+  reset_password_and_update_to_db,
 };

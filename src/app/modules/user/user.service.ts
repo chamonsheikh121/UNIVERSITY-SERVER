@@ -14,9 +14,12 @@ import { FacultyModel } from '../faculty/faculty.model';
 import { TAdmin } from '../admin/admin.interface';
 import { genarate_admin_id } from './user.genarate_admin_id';
 import { AdminModel } from '../admin/admin.model';
+import { send_img_file_to_cloudinary } from '../../utils/send_file_to_cludinary';
 
 const create_student_to_db = async (password: string, payload: TStudent) => {
   // need to check here if email exist or not
+  send_img_file_to_cloudinary()
+
 
   if (await StudentModel.is_student_email_exist(payload?.email)) {
     throw new AppError(HttpStatus.BAD_REQUEST, 'student already exist');
@@ -27,10 +30,16 @@ const create_student_to_db = async (password: string, payload: TStudent) => {
   const academic_semester = await Academic_Semester_Model.findById(
     payload.academic_semester_id,
   );
+
+
+
   const session = await mongoose.startSession();
+
 
   try {
     session.startTransaction();
+
+
 
     userData.id = await genarate_student_id(academic_semester);
     userData.password = password || (config.default_password as string);
@@ -142,8 +151,51 @@ const create_admin_to_db = async (password: string, payload: TAdmin) => {
   }
 };
 
+const get_me_from_db = async (id: string, role: string) => {
+  let result = null;
+  if (role == 'student') {
+    result = await StudentModel.findOne({
+      id,
+    });
+  }
+  if (role == 'faculty') {
+    result = await FacultyModel.findOne({
+      id,
+    });
+  }
+  if (role == 'admin') {
+    result = await AdminModel.findOne({
+      id,
+    });
+  }
+
+  return result;
+};
+
+const change_user_status_to_db = async (_id: string, role:string, status: string) => {
+  
+  
+  console.log(_id, role)
+
+  const result = await UserModel.findByIdAndUpdate(
+    {
+      _id,
+    },
+    {
+      status
+    },
+    {
+      new: true,
+    },
+  );
+
+  return result;
+};
+
 export const user_services = {
   create_student_to_db,
   create_faculty_to_db,
   create_admin_to_db,
+  get_me_from_db,
+  change_user_status_to_db,
 };

@@ -30,3 +30,12 @@ export const forget_password_zod_validation_schema = z.object({
     }),
   }),
 });
+
+export const reset_password_zod_validation_schema = z.object({
+  body: z.object({
+    reset_pass_data: z.object({
+      id: z.string().min(1, 'id is required'),
+      new_password: z.string().min(1, 'new password is required'),
+    }),
+  }),
+});
