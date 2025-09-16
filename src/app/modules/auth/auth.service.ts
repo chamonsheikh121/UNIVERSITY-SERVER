@@ -137,8 +137,40 @@ const create_access_token_by_refresh_token = async (refresh_token: string) => {
   };
 };
 
+const create_reset_link =async(id: string)=>{
+
+  const user = await UserModel.is_user_exist_by_custom_id(id);
+ 
+
+  if (!user) {
+    throw new AppError(HttpStatus.NOT_FOUND, 'user not found');
+  }
+  if (user.status == 'blocked') {
+    throw new AppError(HttpStatus.NOT_FOUND, 'This user already blocked');
+  }
+  if (user.isDeleted) {
+    throw new AppError(HttpStatus.NOT_FOUND, 'This user already deleted');
+  }
+
+  const jwt_payload = {
+    id: user.id as string,
+    role: user.role as string,
+  };
+  const reset_pass_token = create_token(
+    jwt_payload,
+    config.JWT_ACCESS_SECRET as string,
+    '10m',
+  );
+  const reset_ui_link = `http://localhost:5173?id=${id}&&token=${reset_pass_token}`
+
+  return reset_ui_link
+
+
+}
+
 export const auth_services = {
   login_user_to_db,
   chagne_password_into_db,
   create_access_token_by_refresh_token,
+  create_reset_link
 };

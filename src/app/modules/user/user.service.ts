@@ -34,6 +34,7 @@ const create_student_to_db = async (password: string, payload: TStudent) => {
 
     userData.id = await genarate_student_id(academic_semester);
     userData.password = password || (config.default_password as string);
+    userData.email = payload?.email;
     userData.role = 'student';
     userData.status = 'in-progress';
 
@@ -70,6 +71,7 @@ const create_faculty_to_db = async (password: string, payload: TFaculty) => {
     session.startTransaction();
 
     newUser.password = password || (config.default_password as string);
+    newUser.email = payload?.email;
     newUser.role = 'faculty';
     newUser.status = 'in-progress';
     newUser.id = await genarate_faculty_id();
@@ -105,8 +107,10 @@ const create_admin_to_db = async (password: string, payload: TAdmin) => {
 
   const session = await mongoose.startSession();
   try {
-    session.startTransaction();
 
+    
+    session.startTransaction();
+    newUser.email = payload?.email;
     newUser.role = 'admin';
     newUser.status = 'in-progress';
     newUser.password = password || config.default_password;

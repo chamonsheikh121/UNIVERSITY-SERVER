@@ -5,7 +5,8 @@ import config from '../../config';
 
 const userSchema = new Schema<TUser, IUser>(
   {
-    id: { type: String },
+    id: { type: String, unique: true },
+    email: { type: String, unique: true },
     password: { type: String, required: true, select: 0 },
     need_password_change: { type: Boolean, default: true },
     last_pass_changed_at: { type: Date },

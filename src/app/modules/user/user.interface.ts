@@ -3,6 +3,7 @@ import { user_roles } from './user.constance';
 
 export type TUser = {
   id?: string;
+  email?: string;
   password: string;
   need_password_change?: boolean; // default true
   last_pass_changed_at?: Date; // default true
@@ -14,6 +15,7 @@ export type TUser = {
 export type TNewUser = {
   password: string;
   id: string;
+  email: string;
   role: 'admin' | 'student' | 'faculty';
   status: 'in-progress' | 'blocked';
 };

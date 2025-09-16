@@ -56,8 +56,19 @@ const refresh_token = catchAsync(async (req, res, next) => {
   });
 });
 
+const forget_password = catchAsync(async (req, res, next) => {
+  const { forget_pass_data } = req.body
+  const result =
+    await auth_services.create_reset_link(forget_pass_data?.id);
+  send_response(res, {
+    message: 'link genarated successfully',
+    data: result,
+  });
+});
+
 export const auth_controllers = {
   login_user,
   change_password,
   refresh_token,
+  forget_password
 };
