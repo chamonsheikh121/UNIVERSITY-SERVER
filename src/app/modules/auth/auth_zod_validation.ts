@@ -18,3 +18,8 @@ export const auth_change_pass_zod_validation_schema = z.object({
   }),
 });
 
+export const refresh_token_zod_validation_schema = z.object({
+  cookies: z.object({
+    refresh_token: z.string().min(1, 'refresh token is required'),
+  }),
+});

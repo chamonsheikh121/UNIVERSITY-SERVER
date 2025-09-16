@@ -3,6 +3,7 @@
 /* eslint-disable no-unused-vars */
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+import cooke_parser from 'cookie-parser';
 
 import { global_error_handler } from './app/Middle_wares/global_error_handler';
 import { not_found_route } from './app/Middle_wares/not_found_route';
@@ -11,7 +12,12 @@ const app = express();
 
 app.use(express.json());
 app.use(express.text());
-app.use(cors());
+app.use(cooke_parser());
+app.use(
+  cors({
+    origin: ['http://localhost:5173/'],
+  }),
+);
 
 //application routes
 

@@ -7,21 +7,22 @@ import config from '../../config';
 const login_user = catchAsync(async (req, res, next) => {
   const { auth_data } = req.body;
   const result = await auth_services.login_user_to_db(auth_data);
-const {accessToken, refreshToken, need_password_change} = result
+  const { accessToken, refreshToken, need_password_change } = result;
 
-res.cookie('refresh_token', refreshToken, {
-  secure: config.NODE_ENV == 'production',
-  httpOnly: true
-})
-res.cookie('access_token', accessToken, {
-  secure: config.NODE_ENV == 'production',
-  httpOnly: true
-})
+  res.cookie('refresh_token', refreshToken, {
+    secure: config.NODE_ENV == 'production',
+    httpOnly: true,
+  });
+  res.cookie('access_token', accessToken, {
+    secure: config.NODE_ENV == 'production',
+    httpOnly: true,
+  });
 
   send_response(res, {
     message: 'user logged in successfully',
     data: {
-      accessToken, need_password_change
+      accessToken,
+      need_password_change,
     },
   });
 });
@@ -44,7 +45,19 @@ export const auth_controller = {
   login_user,
 };
 
+const refresh_token = catchAsync(async (req, res, next) => {
+  const { refresh_token } = req.cookies;
+
+  const result =
+    await auth_services.create_access_token_by_refresh_token(refresh_token);
+  send_response(res, {
+    message: 'new accesst token retireved successfully',
+    data: result,
+  });
+});
+
 export const auth_controllers = {
   login_user,
   change_password,
+  refresh_token,
 };

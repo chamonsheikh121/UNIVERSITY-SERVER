@@ -6,11 +6,13 @@ import {
   update_course_zod_validation_schema,
 } from './course_zod_validation';
 import validate_request from '../../Middle_wares/validateRequest';
+import authorizer from '../../Middle_wares/authorization';
+import { user_roles } from '../user/user.constance';
 
 const router = express.Router();
 router.post('/create-course', course_contollers.create_course);
 
-router.get('/', course_contollers.get_courses);
+router.get('/', authorizer(user_roles.admin), course_contollers.get_courses);
 router.get('/:_id', course_contollers.get_single_course);
 router.delete('/:_id', course_contollers.delete_course);
 router.patch(

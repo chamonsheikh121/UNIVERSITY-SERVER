@@ -29,7 +29,7 @@ userSchema.statics.is_user_exist_by_custom_id = async function (id: string) {
   const user = await this.findOne({ id }).select('+password');
   return user;
 };
-userSchema.statics.last_login_and_pass_update_comparision =  function (
+userSchema.statics.last_login_and_pass_update_comparision = function (
   last_pass_update_time: Date,
   last_login_time: number,
 ) {

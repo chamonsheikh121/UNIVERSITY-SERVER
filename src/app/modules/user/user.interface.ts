@@ -24,7 +24,10 @@ export interface IUser extends Model<TUser> {
     original_password: string,
     hashed_password: string,
   ): Promise<boolean>;
-  last_login_and_pass_update_comparision(last_pass_update_time: Date, last_login_time: number):boolean
+  last_login_and_pass_update_comparision(
+    last_pass_update_time: Date,
+    last_login_time: number,
+  ): boolean;
 }
 
 export type TUser_Role = keyof typeof user_roles;

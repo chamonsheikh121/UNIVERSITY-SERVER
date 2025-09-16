@@ -40,7 +40,7 @@ const authorizer = (...required_roles: TUser_Role[]) => {
         user.last_pass_changed_at,
         iat as number,
       );
-      
+
     if (is_invalid_token) {
       throw new AppError(
         HttpStatus.UNAUTHORIZED,
