@@ -8,7 +8,7 @@ export const user_zod_validation_schema = z.object({
     .max(20, 'Password must be at most 20 characters long'),
 });
 
-export const user_satus_change_zod_validation_schema = z.object({
+export const user_status_change_zod_validation_schema = z.object({
   body: z.object({
     change_status_data: z.object({
       status: z.enum(user_status_constance),

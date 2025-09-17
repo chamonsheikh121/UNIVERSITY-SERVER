@@ -28,7 +28,10 @@ const localGuardian_zod_validation_schema = z.object({
 // Main Student schema
 export const create_student_zod_validation_schema = z.object({
   body: z.object({
-    password: z.string().min(6, 'password must be at least 6 character long'),
+    password: z
+      .string()
+      .min(6, 'password must be at least 6 character long')
+      .optional(),
     student_data: z.object({
       name: userName_zod_validation_schema,
       gender: z.enum(['male', 'female']),

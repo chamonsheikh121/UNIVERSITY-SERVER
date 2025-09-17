@@ -27,6 +27,7 @@ export interface TAdmin {
   emergencyContactNo: string;
   presentAddress: string;
   permanentAddress: string;
+  profile_image: string;
   managementDepartment: TManagementDepartment;
   isDeleted: boolean;
 }

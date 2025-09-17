@@ -16,11 +16,11 @@ import { genarate_admin_id } from './user.genarate_admin_id';
 import { AdminModel } from '../admin/admin.model';
 import { send_img_file_to_cloudinary } from '../../utils/send_file_to_cludinary';
 
-const create_student_to_db = async (password: string, payload: TStudent) => {
-  // need to check here if email exist or not
-  send_img_file_to_cloudinary()
-
-
+const create_student_to_db = async (
+  password: string,
+  payload: TStudent,
+  path: string | undefined,
+) => {
   if (await StudentModel.is_student_email_exist(payload?.email)) {
     throw new AppError(HttpStatus.BAD_REQUEST, 'student already exist');
   }
@@ -31,21 +31,24 @@ const create_student_to_db = async (password: string, payload: TStudent) => {
     payload.academic_semester_id,
   );
 
-
-
   const session = await mongoose.startSession();
-
 
   try {
     session.startTransaction();
-
-
 
     userData.id = await genarate_student_id(academic_semester);
     userData.password = password || (config.default_password as string);
     userData.email = payload?.email;
     userData.role = 'student';
     userData.status = 'in-progress';
+
+    const cloudinary_uploading = await send_img_file_to_cloudinary(
+      path as string,
+      `as_${userData.role}_and_id_${userData.id}`,
+    );
+
+    console.log(cloudinary_uploading);
+    const profileImage = cloudinary_uploading.secure_url;
 
     const result_user = await UserModel.create([userData], { session });
 
@@ -55,6 +58,7 @@ const create_student_to_db = async (password: string, payload: TStudent) => {
 
     payload.id = result_user[0].id;
     payload.userId = result_user[0]._id;
+    payload.profileImage = profileImage;
     const result_student = await StudentModel.create([payload], { session });
 
     if (!result_student.length) {
@@ -71,7 +75,11 @@ const create_student_to_db = async (password: string, payload: TStudent) => {
   }
 };
 
-const create_faculty_to_db = async (password: string, payload: TFaculty) => {
+const create_faculty_to_db = async (
+  password: string,
+  payload: TFaculty,
+  path: string | undefined,
+) => {
   // need to check here if email exist or not
 
   const newUser: Partial<TNewUser> = {};
@@ -85,6 +93,12 @@ const create_faculty_to_db = async (password: string, payload: TFaculty) => {
     newUser.status = 'in-progress';
     newUser.id = await genarate_faculty_id();
 
+    const upload_image_to_cloudinary = await send_img_file_to_cloudinary(
+      path,
+      `as_${newUser.role}_and_id_${newUser.id}`,
+    );
+    const profile_image = upload_image_to_cloudinary.secure_url;
+
     const user_result = await UserModel.create([newUser], { session });
 
     if (!user_result.length) {
@@ -93,6 +107,7 @@ const create_faculty_to_db = async (password: string, payload: TFaculty) => {
 
     payload.id = user_result[0].id;
     payload.userId = user_result[0]._id;
+    payload.profile_image = profile_image;
     const faculty_result = await FacultyModel.create([payload], { session });
 
     if (!faculty_result.length) {
@@ -109,7 +124,11 @@ const create_faculty_to_db = async (password: string, payload: TFaculty) => {
   }
 };
 
-const create_admin_to_db = async (password: string, payload: TAdmin) => {
+const create_admin_to_db = async (
+  password: string,
+  payload: TAdmin,
+  path: string | undefined,
+) => {
   // need to check here if email exist or not
 
   const newUser: Partial<TNewUser> = {};
@@ -123,6 +142,12 @@ const create_admin_to_db = async (password: string, payload: TAdmin) => {
     newUser.password = password || config.default_password;
     newUser.id = await genarate_admin_id();
 
+    const upload_image_to_cloudinary = await send_img_file_to_cloudinary(
+      path as string,
+      `as_${newUser.role}_and_id_${newUser.id}`,
+    );
+    const profile_image = upload_image_to_cloudinary.secure_url;
+
     const user_creation = await UserModel.create([newUser], { session });
 
     console.log(user_creation);
@@ -132,7 +157,7 @@ const create_admin_to_db = async (password: string, payload: TAdmin) => {
 
     payload.id = user_creation[0].id;
     payload.userId = user_creation[0]._id;
-
+    payload.profile_image = profile_image;
     const admin_creation = await AdminModel.create([payload], { session });
 
     console.log(admin_creation);
@@ -172,17 +197,19 @@ const get_me_from_db = async (id: string, role: string) => {
   return result;
 };
 
-const change_user_status_to_db = async (_id: string, role:string, status: string) => {
-  
-  
-  console.log(_id, role)
+const change_user_status_to_db = async (
+  _id: string,
+  role: string,
+  status: string,
+) => {
+  console.log(_id, role);
 
   const result = await UserModel.findByIdAndUpdate(
     {
       _id,
     },
     {
-      status
+      status,
     },
     {
       new: true,

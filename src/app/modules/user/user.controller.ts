@@ -5,13 +5,13 @@ import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
 
 const create_student = catchAsync(async (req, res, next) => {
-
-console.log(req.files)
+  const path = req?.file?.path;
 
   const { password, student_data } = req.body;
   const result = await user_services.create_student_to_db(
     password,
     student_data,
+    path,
   );
 
   if (!result) {
@@ -25,10 +25,11 @@ console.log(req.files)
 });
 const create_faculty = catchAsync(async (req, res, next) => {
   const { password, faculty_data } = req.body;
-
+  const path = req?.file?.path;
   const result = await user_services.create_faculty_to_db(
     password,
     faculty_data,
+    path,
   );
 
   // if (!result) {
@@ -42,8 +43,12 @@ const create_faculty = catchAsync(async (req, res, next) => {
 });
 const create_admin = catchAsync(async (req, res, next) => {
   const { password, admin_data } = req.body;
-
-  const result = await user_services.create_admin_to_db(password, admin_data);
+  const path = req?.file?.path;
+  const result = await user_services.create_admin_to_db(
+    password,
+    admin_data,
+    path,
+  );
 
   // if !result then better throw a error
 
@@ -65,11 +70,15 @@ const get_me = catchAsync(async (req, res, next) => {
 
 const change_user_status = catchAsync(async (req, res, next) => {
   const { role } = req.user;
-  const {_id} = req.params
-  const {change_status_data} = req.body
+  const { _id } = req.params;
+  const { change_status_data } = req.body;
 
-  const result = await user_services.change_user_status_to_db(_id, role, change_status_data?.status);
-  
+  const result = await user_services.change_user_status_to_db(
+    _id,
+    role,
+    change_status_data?.status,
+  );
+
   send_response(res, {
     message: `user status changed successfully`,
     data: result,
@@ -81,5 +90,5 @@ export const user_controllers = {
   create_faculty,
   create_admin,
   get_me,
-  change_user_status
+  change_user_status,
 };

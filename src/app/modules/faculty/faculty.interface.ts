@@ -13,5 +13,6 @@ export interface TFaculty {
   permanentAddress: string;
   academicFaculty: object;
   academicDepartmentId: object;
+  profile_image: string;
   isDeleted: boolean;
 }

@@ -13,7 +13,7 @@ export const auth_change_pass_zod_validation_schema = z.object({
   body: z.object({
     password_data: z.object({
       old_password: z.string().min(1, ' old password is required'),
-      new_password: z.string().min(1, 'new password is requied'),
+      new_password: z.string().min(1, 'new password is required'),
     }),
   }),
 });

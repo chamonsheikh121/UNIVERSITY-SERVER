@@ -59,6 +59,10 @@ const facultySchema = new Schema<TFaculty>(
       ref: 'Academic_departments',
       required: true,
     },
+    profile_image: {
+      type: String,
+      required: true,
+    },
     isDeleted: {
       type: Boolean,
       default: false,

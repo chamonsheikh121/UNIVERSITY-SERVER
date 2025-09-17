@@ -21,6 +21,10 @@ const adminSchema = new Schema<TAdmin>(
     emergencyContactNo: { type: String, required: true },
     presentAddress: { type: String, required: true },
     permanentAddress: { type: String, required: true },
+    profile_image: {
+      type: String,
+      required: true,
+    },
     managementDepartment: {
       type: String,
       enum: management_department,
