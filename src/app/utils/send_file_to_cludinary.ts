@@ -3,9 +3,9 @@ import { v2 as cloudinary } from 'cloudinary';
 export const send_img_file_to_cloudinary = async () => {
   // configure only once (better move this to a config file)
   cloudinary.config({
-    cloud_name: 'dz28duolk',
-    api_key: '115141379594145',
-    api_secret: 'LKj7hgo_9ivUOAiefGOY6NRYCQc',
+    cloud_name: config.CLOUDINARY_NAME,
+    api_key: config.CLOUDINARY_API_KEY,
+    api_secret: config.CLOUDINARY_API_SECRET
   });
 
   try {
