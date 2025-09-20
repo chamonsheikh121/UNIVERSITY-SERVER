@@ -34,8 +34,8 @@ const create_offered_course_zod_validation_schema = z.object({
       })
       .refine(
         (offered_course_data) => {
-          const start = new Date(`1970-01-01${offered_course_data.start_time}`);
-          const end = new Date(`1970-01-01${offered_course_data.end_time}`);
+          const start = new Date(`1970-01-01T${offered_course_data.start_time}:00`);
+          const end = new Date(`1970-01-01T${offered_course_data.end_time}:00`); 
 
           return end > start;
         },

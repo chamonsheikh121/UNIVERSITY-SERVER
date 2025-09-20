@@ -47,7 +47,7 @@ const routes = [
     route: course_routers,
   },
   {
-    path: '/semester-registraions',
+    path: '/semester-registrations',
     route: semester_registration_router,
   },
   {

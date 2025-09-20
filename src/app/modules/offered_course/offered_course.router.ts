@@ -6,7 +6,7 @@ import { offered_course_controller } from './offered_course.controller';
 const router = Router();
 
 router.post(
-  '/',
+  '/create-offered_course',
   validate_request(
     offered_course_zod_validation.create_offered_course_zod_validation_schema,
   ),

@@ -26,7 +26,7 @@ academic_department_schema.pre('save', async function (next) {
   });
 
   if (is_department_exist) {
-    throw new AppError(HttpStatus.NOT_FOUND, 'Department already exist');
+    throw new AppError(HttpStatus.BAD_REQUEST, 'Department already exist');
   }
 });
 
@@ -36,7 +36,7 @@ academic_department_schema.pre('findOneAndUpdate', async function () {
     query._id,
   );
   if (!is_department_exist) {
-    throw new AppError(HttpStatus.NOT_FOUND, 'Department dosent exist');
+    throw new AppError(HttpStatus.BAD_REQUEST, 'Department dosent exist');
   }
 });
 

@@ -13,6 +13,7 @@ const create_offered_course_to_db = async (payload: any) => {
     academic_faculty,
     academic_department,
     course,
+    section,
     faculty,
   } = payload;
 
@@ -48,6 +49,31 @@ const create_offered_course_to_db = async (payload: any) => {
 
   if (!is_faculty_exist) {
     throw new AppError(HttpStatus.BAD_REQUEST, 'No faculty found');
+  }
+
+  const is_same_course_semester_registration_section =
+    await Offered_Course_Model.findOne({
+      semester_registration,
+      course,
+      section
+    });
+    if (is_same_course_semester_registration_section) {
+    throw new AppError(
+      HttpStatus.BAD_REQUEST,
+      `${is_semester_registration_exist.status} semester registration's course of ${is_course_exist.title}'s section ${section} already exist`,
+    );
+  }
+
+  const is_Department_belong_faculty = await Academic_Department_Model.findOne({
+    _id: academic_department,
+    academic_faculty_id: academic_faculty,
+  });
+
+  if (!is_Department_belong_faculty) {
+    throw new AppError(
+      HttpStatus.BAD_REQUEST,
+      `this department of ${is_academic_department_exist?.name} is not belong to faculty of ${is_academic_faculty_exist?.name}`,
+    );
   }
 
   const academic_semester =

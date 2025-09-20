@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import { Model, Types } from 'mongoose';
-
 export type TSemesterRegistration = {
   academic_semester_id: Types.ObjectId;
   status: 'ONGOING' | 'ENDED' | 'UPCOMMING';
