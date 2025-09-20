@@ -55,9 +55,9 @@ const create_offered_course_to_db = async (payload: any) => {
     await Offered_Course_Model.findOne({
       semester_registration,
       course,
-      section
+      section,
     });
-    if (is_same_course_semester_registration_section) {
+  if (is_same_course_semester_registration_section) {
     throw new AppError(
       HttpStatus.BAD_REQUEST,
       `${is_semester_registration_exist.status} semester registration's course of ${is_course_exist.title}'s section ${section} already exist`,
