@@ -6,11 +6,18 @@ import { offered_course_controller } from './offered_course.controller';
 const router = Router();
 
 router.post(
-  '/create-offered_course',
+  '/create-offered-course',
   validate_request(
     offered_course_zod_validation.create_offered_course_zod_validation_schema,
   ),
   offered_course_controller.create_offered_course,
+);
+router.patch(
+  '/update-offered-course/:_id',
+  validate_request(
+    offered_course_zod_validation.update_offered_course_zod_validation_schema,
+  ),
+  offered_course_controller.update_offered_course,
 );
 // router.get('/', offered_course_controller.);
 // router.get('/:id', );

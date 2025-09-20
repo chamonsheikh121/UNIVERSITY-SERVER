@@ -36,20 +36,25 @@ const create_offered_course = catchAsync(async (req, res, next) => {
 //   }
 // };
 
-// const update_offered_course = async (req: Request, res: Response) => {
-//   try {
-//     const result = await OfferedCourseService.deleteOfferedCourse(
-//       req.params.id,
-//     );
-//     res.status(200).json({ success: true, data: result });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: (error as Error).message });
-//   }
-// };
+const update_offered_course = catchAsync(async (req, res, next) => {
+  const { _id } = req.params;
+  const { offered_course_update_data } = req.body;
+
+console.log(_id, offered_course_update_data)
+
+  const result = await offered_course_services.update_offered_course_to_db(
+    _id,
+    offered_course_update_data,
+  );
+  send_response(res, {
+    message: 'offered course updated successfully',
+    data: result,
+  });
+});
 
 export const offered_course_controller = {
   create_offered_course,
   // get_all_offered_courses,
   // get_single_offered_course,
-  // update_offered_course,
+  update_offered_course,
 };

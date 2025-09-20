@@ -17,3 +17,9 @@ export type TOffered_course = {
   start_time: string;
   end_time: string;
 };
+
+export type Tschedule = {
+  days: Day[];
+  start_time: string;
+  end_time: string;
+};

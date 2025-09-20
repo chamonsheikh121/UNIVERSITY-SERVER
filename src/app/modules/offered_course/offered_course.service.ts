@@ -6,6 +6,8 @@ import { FacultyModel } from '../faculty/faculty.model';
 import { SemesterRegistrationModel } from '../semester_registration/semester_registration.model';
 import { Offered_Course_Model } from './offered_course.model';
 import HttpStatus from 'http-status';
+import { has_time_conflict } from './offered_course.utils';
+import { TOffered_course, Tschedule } from './offered_course.interface';
 
 const create_offered_course_to_db = async (payload: any) => {
   const {
@@ -15,6 +17,9 @@ const create_offered_course_to_db = async (payload: any) => {
     course,
     section,
     faculty,
+    days,
+    start_time,
+    end_time,
   } = payload;
 
   const is_semester_registration_exist =
@@ -50,6 +55,31 @@ const create_offered_course_to_db = async (payload: any) => {
   if (!is_faculty_exist) {
     throw new AppError(HttpStatus.BAD_REQUEST, 'No faculty found');
   }
+
+  const assigned_schedules = await Offered_Course_Model.find({
+    semester_registration,
+    faculty,
+    days: { $in: days },
+  }).select('days start_time end_time');
+
+  const new_schedule = {
+    days,
+    start_time,
+    end_time,
+  };
+
+  const is_has_time_conflict = has_time_conflict(
+    assigned_schedules,
+    new_schedule,
+  );
+  if (is_has_time_conflict) {
+    throw new AppError(
+      HttpStatus.CONFLICT,
+      'this faculty is not available in that time ! choose other time or day !',
+    );
+  }
+
+  console.log(is_has_time_conflict, assigned_schedules, new_schedule);
 
   const is_same_course_semester_registration_section =
     await Offered_Course_Model.findOne({
@@ -110,11 +140,52 @@ const create_offered_course_to_db = async (payload: any) => {
 //   return course;
 // };
 
-//  const deleteOfferedCourse = async (id: string) => {
-//   const course = await OfferedCourse.findByIdAndDelete(id);
-//   return course;
-// };
+const update_offered_course_to_db = async (
+  id: string,
+  payload: Partial<TOffered_course>,
+) => {
+  // const {days, start_time, end_time} = payload
+
+  const is_offered_course_exist = await Offered_Course_Model.findById(id);
+
+  if (!is_offered_course_exist) {
+    throw new AppError(HttpStatus.BAD_REQUEST, 'No offered course found');
+  }
+
+  const semester_registration = is_offered_course_exist.semester_registration;
+
+  const assigned_schedules = await Offered_Course_Model.find({
+    semester_registration,
+    faculty: payload.faculty || is_offered_course_exist.faculty,
+    days: { $in: payload.days },
+  }).select('days start_time end_time');
+
+  const new_schedule = {
+    days: payload.days || is_offered_course_exist.days,
+    start_time: payload.start_time || is_offered_course_exist.start_time,
+    end_time: payload.end_time || is_offered_course_exist.end_time,
+  };
+
+  const is_has_time_conflict = has_time_conflict(
+    assigned_schedules,
+    new_schedule,
+  );
+  if (is_has_time_conflict) {
+    throw new AppError(
+      HttpStatus.CONFLICT,
+      'this faculty is not available in that time ! choose other time or day !',
+    );
+  }
+
+  console.log(is_has_time_conflict, assigned_schedules, new_schedule);
+
+  const result = await Offered_Course_Model.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  return result;
+};
 
 export const offered_course_services = {
   create_offered_course_to_db,
+  update_offered_course_to_db,
 };
