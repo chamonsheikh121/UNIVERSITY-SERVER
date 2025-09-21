@@ -17,5 +17,3 @@ export interface ISemester_Registration extends Model<TSemesterRegistration> {
     id: string,
   ): Promise<TSemesterRegistration | null>;
 }
-
-

@@ -40,7 +40,7 @@ const update_offered_course = catchAsync(async (req, res, next) => {
   const { _id } = req.params;
   const { offered_course_update_data } = req.body;
 
-console.log(_id, offered_course_update_data)
+  console.log(_id, offered_course_update_data);
 
   const result = await offered_course_services.update_offered_course_to_db(
     _id,

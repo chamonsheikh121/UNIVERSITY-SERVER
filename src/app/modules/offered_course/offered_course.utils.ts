@@ -20,4 +20,3 @@ export const has_time_conflict = (
 
   return false;
 };
-
