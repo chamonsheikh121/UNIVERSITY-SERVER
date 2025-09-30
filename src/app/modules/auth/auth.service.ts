@@ -92,7 +92,7 @@ const create_access_token_by_refresh_token = async (refresh_token: string) => {
     throw new AppError(HttpStatus.UNAUTHORIZED, 'you are not authorized !!! ');
   }
 
-  console.log(refresh_token);
+
 
   const decoded = jwt.verify(
     refresh_token,
@@ -101,7 +101,7 @@ const create_access_token_by_refresh_token = async (refresh_token: string) => {
   const { id, iat } = decoded;
 
   const user = await UserModel.is_user_exist_by_custom_id(id);
-  console.log(user, refresh_token);
+
 
   if (!user) {
     throw new AppError(HttpStatus.NOT_FOUND, 'user not found');

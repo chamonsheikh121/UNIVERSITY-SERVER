@@ -17,10 +17,29 @@ const authorizer = (...required_roles: TUser_Role[]) => {
       );
     }
 
-    const decoded = jwt.verify(
-      token,
-      config.JWT_ACCESS_SECRET as string,
-    ) as JwtPayload;
+    // const decoded = jwt.verify(
+    //     token,
+    //     config.JWT_ACCESS_SECRET as string,
+    //   ) as JwtPayload;
+
+    let decoded;
+    try {
+      decoded = jwt.verify(
+        token,
+        config.JWT_ACCESS_SECRET as string,
+      ) as JwtPayload;
+      // console.log('decoded ', decoded);
+    } catch (error) {
+      return next(error); //  ata just next() a pathai disse but function running thake tai return kore stop kore dite
+    }
+
+    if (!decoded) {
+      throw new AppError(
+        HttpStatus.UNAUTHORIZED,
+        'you are not authorized  !!! ',
+      );
+    }
+
     const { id, role, iat, exp } = decoded;
 
     const user = await UserModel.is_user_exist_by_custom_id(id);
