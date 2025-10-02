@@ -8,7 +8,7 @@ export const zodErrorHandler = (err: ZodError): TGeneric_error_response => {
       message: issue.message,
     };
   });
-
+  
   const status_code = 400;
   return {
     status_code,

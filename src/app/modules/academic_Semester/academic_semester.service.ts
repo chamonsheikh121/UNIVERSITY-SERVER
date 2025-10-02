@@ -1,3 +1,4 @@
+import Query_Builder from '../../builder/query_bulder';
 import { TAcademic_Semester } from './academic_semester.interface';
 import { Academic_Semester_Model } from './academic_semester.model';
 
@@ -18,8 +19,15 @@ const create_academic_semester_to_db = async (payload: TAcademic_Semester) => {
   return result;
 };
 
-const get_all_academic_semesters_from_db = async () => {
-  const result = await Academic_Semester_Model.find();
+const get_all_academic_semesters_from_db = async (
+  query: Record<string, unknown>,
+) => {
+  const academic_semester_query = new Query_Builder(
+    Academic_Semester_Model.find(),
+    query,
+  ).filter().sort().field_limit().pagination()
+
+  const result = await academic_semester_query.model_query;
   return result;
 };
 const get_single_academic_semester_from_db = async (id: string) => {

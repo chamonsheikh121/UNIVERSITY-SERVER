@@ -5,6 +5,8 @@ import {
   semester_Names,
 } from './academic_semester_constants';
 import { TAcademic_Semester } from './academic_semester.interface';
+import AppError from '../../errors/AppError';
+import HttpStatus  from 'http-status';
 
 // enums
 
@@ -48,7 +50,7 @@ academicSemesterSchema.pre('save', async function (next) {
     code: this.code,
   });
   if (is_Academic_semester_exist) {
-    throw new Error('Semester already exist');
+    throw new AppError(HttpStatus.BAD_REQUEST, 'semester already exist !!!');
   }
   next();
 });
