@@ -1,6 +1,5 @@
-
 import { TErrorSource, TGeneric_error_response } from '../interface/error';
-import {TokenExpiredError } from 'jsonwebtoken';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 export const token_expired_error = (
   err: TokenExpiredError,

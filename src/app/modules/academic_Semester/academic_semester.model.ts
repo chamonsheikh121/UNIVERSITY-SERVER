@@ -6,7 +6,7 @@ import {
 } from './academic_semester_constants';
 import { TAcademic_Semester } from './academic_semester.interface';
 import AppError from '../../errors/AppError';
-import HttpStatus  from 'http-status';
+import HttpStatus from 'http-status';
 
 // enums
 

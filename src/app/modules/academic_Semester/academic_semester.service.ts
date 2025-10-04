@@ -25,7 +25,11 @@ const get_all_academic_semesters_from_db = async (
   const academic_semester_query = new Query_Builder(
     Academic_Semester_Model.find(),
     query,
-  ).filter().sort().field_limit().pagination()
+  )
+    .filter()
+    .sort()
+    .field_limit()
+    .pagination();
 
   const result = await academic_semester_query.model_query;
   return result;
