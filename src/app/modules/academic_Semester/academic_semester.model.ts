@@ -5,6 +5,8 @@ import {
   semester_Names,
 } from './academic_semester_constants';
 import { TAcademic_Semester } from './academic_semester.interface';
+import AppError from '../../errors/AppError';
+import HttpStatus from 'http-status';
 
 // enums
 
@@ -41,18 +43,17 @@ const academicSemesterSchema = new Schema<TAcademic_Semester>(
   },
 );
 
-// academicSemesterSchema.pre('save', async function (next) {
-//   const is_Academic_semester_exist = await Academic_Semester_Model.findOne({
-//     year: this.year,
-//     name: this.name,
-//     code: this.code,
-//   });
-
-//   if (is_Academic_semester_exist) {
-//     throw new Error('Semester already exist');
-//   }
-//   next();
-// });
+academicSemesterSchema.pre('save', async function (next) {
+  const is_Academic_semester_exist = await Academic_Semester_Model.findOne({
+    year: this.year,
+    name: this.name,
+    code: this.code,
+  });
+  if (is_Academic_semester_exist) {
+    throw new AppError(HttpStatus.BAD_REQUEST, 'semester already exist !!!');
+  }
+  next();
+});
 
 export const Academic_Semester_Model = model<TAcademic_Semester>(
   'Academic_Semesters',

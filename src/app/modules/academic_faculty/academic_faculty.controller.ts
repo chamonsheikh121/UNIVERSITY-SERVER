@@ -17,9 +17,11 @@ const create_academic_faculty = catchAsync(async (req, res, next) => {
 
 const get_all_academic_faculties = catchAsync(async (req, res, next) => {
   const result =
-    await academic_faculty_services.get_all_academic_faculties_from_db();
+    await academic_faculty_services.get_all_academic_faculties_from_db(
+      req.query,
+    );
   send_response(res, {
-    message: 'academic faculties retrived successfully',
+    message: 'academic faculties retrieved successfully',
     data: result,
   });
 });
@@ -29,7 +31,7 @@ const get_single_academic_faculty = catchAsync(async (req, res, next) => {
   const result =
     await academic_faculty_services.get_single_academic_faculty_from_db(id);
   send_response(res, {
-    message: 'academic faculty retrived successfully',
+    message: 'academic faculty retrieved successfully',
     data: result,
   });
 });

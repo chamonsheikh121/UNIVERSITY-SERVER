@@ -3,10 +3,11 @@ import AppError from '../../errors/AppError';
 import UserModel from '../user/user.model';
 import { TAuth_user, TChange_password } from './auth.interface';
 import HttpStatus from 'http-status';
-import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
+import jwt, { JwtPayload, SignOptions, TokenExpiredError } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { create_token } from './auth.utiles';
 import { mail_sender } from '../../utils/sendMail';
+import { NextFunction } from 'express';
 
 const login_user_to_db = async (payload: TAuth_user) => {
   const user = await UserModel.is_user_exist_by_custom_id(payload?.id);
@@ -92,16 +93,30 @@ const create_access_token_by_refresh_token = async (refresh_token: string) => {
     throw new AppError(HttpStatus.UNAUTHORIZED, 'you are not authorized !!! ');
   }
 
-  console.log(refresh_token);
+  let decoded;
+  try {
+    decoded = jwt.verify(
+      refresh_token,
+      config.JWT_REFRESH_SECRET as string,
+    ) as JwtPayload;
+  } catch (error) {
+    if ((error as TokenExpiredError)?.name == 'TokenExpiredError') {
+      throw new AppError(
+        HttpStatus.UNAUTHORIZED,
+        'refresh token expired  !!! ',
+      );
+      //  ata just next() a pathai disse but function running thake tai return kore stop kore dite
+    }
+    throw new AppError(HttpStatus.UNAUTHORIZED, 'You are not authorized !!! ');
+  }
 
-  const decoded = jwt.verify(
-    refresh_token,
-    config.JWT_REFRESH_SECRET as string,
-  ) as JwtPayload;
+  if (!decoded) {
+    throw new AppError(HttpStatus.UNAUTHORIZED, 'you are not authorized  !!! ');
+  }
+
   const { id, iat } = decoded;
 
   const user = await UserModel.is_user_exist_by_custom_id(id);
-  console.log(user, refresh_token);
 
   if (!user) {
     throw new AppError(HttpStatus.NOT_FOUND, 'user not found');

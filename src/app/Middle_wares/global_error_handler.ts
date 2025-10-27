@@ -11,6 +11,7 @@ import validation_error_handler from '../errors/handle_mongoose_validation_error
 import cast_error_handler from '../errors/handle_mongoose_cast_Error';
 import duplicate_error_handler from '../errors/handle_duplication_error';
 import AppError from '../errors/AppError';
+import { token_expired_error } from '../errors/token_expired_error';
 
 export const global_error_handler: ErrorRequestHandler = (
   error,
@@ -49,6 +50,11 @@ export const global_error_handler: ErrorRequestHandler = (
     statusCode = simplifiedError.status_code;
     message = simplifiedError.message;
     errorSource = simplifiedError.errorSource;
+  } else if (error?.name == 'TokenExpiredError') {
+    const simplifiedError = token_expired_error(error);
+    statusCode = simplifiedError.status_code;
+    message = simplifiedError.message;
+    errorSource = simplifiedError.errorSource;
   } else if (error instanceof AppError) {
     statusCode = error.status_code;
     message = error.message;
@@ -68,7 +74,7 @@ export const global_error_handler: ErrorRequestHandler = (
     ];
   }
 
-  // console.log(error.issues);
+  // console.log('error', error);
 
   res.status(statusCode).json({
     success: false,

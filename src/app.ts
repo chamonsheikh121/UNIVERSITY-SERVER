@@ -15,8 +15,17 @@ app.use(express.text());
 app.use(cooke_parser());
 app.use(
   cors({
+<<<<<<< HEAD
     origin: ['http://localhost:5173'],
     credentials:true
+=======
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'http://localhost:5175',
+    ],
+    credentials: true,
+>>>>>>> 97fceacc0e558e46f9633e1cd4262c16f2fc1a77
   }),
 );
 

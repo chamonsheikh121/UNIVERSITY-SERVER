@@ -16,9 +16,11 @@ const create_academic_semester = catchAsync(async (req, res, next) => {
 
 const get_all_academic_semesters = catchAsync(async (req, res, next) => {
   const result =
-    await academic_semester_service.get_all_academic_semesters_from_db();
+    await academic_semester_service.get_all_academic_semesters_from_db(
+      req?.query,
+    );
   send_response(res, {
-    message: 'academic semesters retrived successfully',
+    message: 'academic semesters retrieved successfully',
     data: result,
   });
 });
