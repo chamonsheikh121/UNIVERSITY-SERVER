@@ -4,6 +4,7 @@ import { catchAsync } from '../../utils/catch_async';
 import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
 
+
 const getStudents = catchAsync(async (req, res, next) => {
   const result = await studentServices.getAllStudentsFromDB(req.query);
   if (!result) {
@@ -15,7 +16,8 @@ const getStudents = catchAsync(async (req, res, next) => {
 
   send_response(res, {
     message: 'students retrieved successfully',
-    data: result,
+    data: result.result,
+    meta:result.meta
   });
 });
 
@@ -25,6 +27,7 @@ const get_single_student = catchAsync(async (req, res, next) => {
   send_response(res, {
     message: 'student retrieved successfully',
     data: result,
+    meta:''
   });
 });
 

@@ -4,7 +4,7 @@ import { Academic_Semester_Model } from '../academic_Semester/academic_semester.
 import { TStudent } from '../student/student.interface';
 import StudentModel from '../student/student.model';
 import { genarate_student_id } from './user.genarate_user_id';
-import { TNewUser } from './user.interface';
+import { TNewUser, TUser } from './user.interface';
 import UserModel from './user.model';
 import AppError from '../../errors/AppError';
 import HttpStatus from 'http-status';
@@ -200,16 +200,16 @@ const get_me_from_db = async (id: string, role: string) => {
 const change_user_status_to_db = async (
   _id: string,
   role: string,
-  status: string,
+  payload: Pick<TUser, 'status'>,
 ) => {
-  console.log(_id, role);
+  console.log(_id, role,payload);
 
   const result = await UserModel.findByIdAndUpdate(
     {
       _id,
     },
     {
-      status,
+      status: payload.status,
     },
     {
       new: true,

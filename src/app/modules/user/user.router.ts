@@ -48,5 +48,10 @@ router.get(
   authorizer(user_roles.admin, user_roles.faculty, user_roles.student),
   user_controllers.get_me,
 );
+router.patch(
+  '/change-status/:user_id',
+  authorizer(user_roles.admin, user_roles.faculty, user_roles.student),
+  user_controllers.change_user_status,
+);
 
 export const user_router = router;

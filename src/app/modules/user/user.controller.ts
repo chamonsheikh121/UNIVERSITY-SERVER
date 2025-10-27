@@ -70,18 +70,18 @@ const get_me = catchAsync(async (req, res, next) => {
 
 const change_user_status = catchAsync(async (req, res, next) => {
   const { role } = req.user;
-  const { _id } = req.params;
-  const { change_status_data } = req.body;
+  const { user_id } = req.params;
 
   const result = await user_services.change_user_status_to_db(
-    _id,
+    user_id,
     role,
-    change_status_data?.status,
+    req.body,
   );
 
   send_response(res, {
     message: `user status changed successfully`,
     data: result,
+    meta: '',
   });
 });
 

@@ -3,7 +3,7 @@ import { FilterQuery, Query } from 'mongoose';
 class Query_Builder<T> {
   public model_query: Query<T[], T>;
   public query: Record<string, unknown>;
-
+  public filter_condition: FilterQuery<T> = {}; // <-- new property
   constructor(modelquery: Query<T[], T>, query: Record<string, unknown>) {
     this.model_query = modelquery;
     this.query = query;
@@ -28,6 +28,7 @@ class Query_Builder<T> {
     exclude_field.forEach((element) => delete queryObj[element]);
 
     this.model_query = this.model_query.find(queryObj as FilterQuery<T>);
+     this.filter_condition = { ...this.filter_condition, ...queryObj } as FilterQuery<T>;
     return this;
   }
 

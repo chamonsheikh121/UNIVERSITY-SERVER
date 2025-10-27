@@ -1,12 +1,13 @@
 import { Response } from 'express';
 import HttpStatus from 'http-status';
 
-type TResopnseData<T> = {
+type TResopnseData<T,X> = {
   message: string;
   data: T;
+  meta:X
 };
 
-export const send_response = <T>(res: Response, data: TResopnseData<T>) => {
+export const send_response = <T,X>(res: Response, data: TResopnseData<T,X>) => {
   const status_code = HttpStatus.OK;
   const success = true;
 
@@ -14,5 +15,6 @@ export const send_response = <T>(res: Response, data: TResopnseData<T>) => {
     success: success,
     message: data.message,
     data: data.data,
+    meta:data?.meta
   });
 };

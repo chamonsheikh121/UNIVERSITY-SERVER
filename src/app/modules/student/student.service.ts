@@ -6,79 +6,10 @@ import UserModel from '../user/user.model';
 import { TStudent } from './student.interface';
 import Query_Builder from '../../builder/query_bulder';
 import { student_searchable_fields } from './student.constance';
+import { create_meta_data } from '../../utils/meta_data_maker';
 
-const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  // const queryObj = { ...query };
-  // const exclude_field = ['searchTerm', 'sort', 'page', 'limit', 'field'];
-  // exclude_field.forEach((element) => delete queryObj[element]);
-
-  // console.log('Base Query : ', { ...query }, 'filter query : ', queryObj);
-
-  // let searchTerm = '';
-  // if (query?.searchTerm) {
-  //   searchTerm = query.searchTerm as string;
-  // }
-
-  // serching
-  // console.log(
-  //   'search query  is getting from query as ',
-  //   searchTerm ? searchTerm : 'nothing',
-  // );
-  // const search_query = StudentModel.find({
-  //   $or: [
-  //     'email',
-  //     'name.firstName',
-  //     'guardian.fatherName',
-  //     'localGuardian.address',
-  //   ].map((field) => {
-  //     return { [field]: { $regex: searchTerm, $options: 'i' } };
-  //   }),
-  // });
-
-  //filtering
-  // console.log(
-  //   'filter query object is getting',
-  //   queryObj ? queryObj : 'nothing',
-  // );
-  // const filter_query = search_query
-  //   .find(queryObj)
-  //   .populate('academic_semester_id')
-  //   .populate({
-  //     path: 'academic_department_id',
-  //     populate: {
-  //       path: 'academic_faculty_id',
-  //     },
-  //   });
-
-  // sorting
-  // console.log(
-  //   'sort query is getting from query as ',
-  //   query?.sort ? query.sort : 'nothin',
-  // );
-  // const sort: string = query?.sort ? (query.sort as string) : '-createdAt';
-  // const sort_query = filter_query.sort(sort);
-
-  // const page: number = query?.page ? Number(query.page) : 1;
-  // const limit: number = query?.limit ? Number(query.limit) : 1;
-  // const skip: number = (page - 1) * limit;
-
-  // paginating
-  // const pagination_query = sort_query.skip(skip);
-
-  // limiting
-  // console.log(
-  //   'limit query is getting from query as ',
-  //   query?.limit ? query.limit : 'nothing',
-  // );
-  // const limit_query = pagination_query.limit(limit);
-
-  // const field: string = query?.field
-  //   ? (query.field as string).split(',').join(' ')
-  //   : '-__v';
-  // const field_query = await limit_query.select(field);
-
-  // return field_query;
-
+export const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  // ✅ build query with chaining
   const student_query = new Query_Builder(
     StudentModel.find()
       .populate('userId')
@@ -96,8 +27,19 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     .sort()
     .pagination()
     .field_limit();
+
+  // get the paginated result
   const result = await student_query.model_query;
-  return result;
+
+  // ✅ count total number of documents that match filters
+  const total = await StudentModel.countDocuments(
+    student_query.filter_condition, // important: pass same filter
+  );
+
+  // ✅ generate meta data for frontend pagination
+  const meta = create_meta_data(query, total);
+
+  return { result, meta };
 };
 const get_single_student_from_db = async (id: string) => {
   const result = await StudentModel.findById(id);
