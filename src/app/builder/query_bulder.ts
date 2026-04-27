@@ -1,4 +1,4 @@
-import { FilterQuery, Query } from 'mongoose';
+iimport { FilterQuery, Query } from 'mongoose';
 
 class Query_Builder<T> {
   public model_query: Query<T[], T>;
@@ -45,12 +45,7 @@ class Query_Builder<T> {
     this.model_query = this.model_query.skip(skip).limit(limit);
     return this;
   }
-  field_limit() {
-    const fields =
-      (this?.query?.fields as string)?.split(',')?.join(' ') || '-__v';
-    this.model_query = this.model_query.select(fields);
-    return this;
-  }
+ .. 
 }
 
 export default Query_Builder;
